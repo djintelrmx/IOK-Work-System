@@ -25,7 +25,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // หน้าที่ไม่ต้อง login
-  const publicPaths = ['/login', '/signup', '/auth']
+  const publicPaths = ['/login', '/signup', '/auth', '/forgot-password', '/reset-password']
   const isPublic = publicPaths.some(p => pathname === p || pathname.startsWith(p))
 
   // ถ้าไม่ได้ login และไม่ได้อยู่หน้า public → redirect ไป login

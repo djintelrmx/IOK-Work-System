@@ -10,6 +10,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     no_access: 'อีเมลนี้ไม่มีสิทธิ์เข้าใช้งาน กรุณาติดต่อผู้ดูแลระบบ',
     auth_failed: 'เกิดข้อผิดพลาด กรุณาลองใหม่',
     invalid_credentials: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+    pending: 'บัญชีของคุณรอการอนุมัติจากผู้ดูแลระบบ',
+    inactive: 'บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ',
   }
 
   return (
@@ -68,10 +70,15 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           </button>
         </form>
 
-        <p className="text-xs text-gray-400 text-center mt-5">
-          ยังไม่มีบัญชี?{' '}
-          <Link href="/signup" className="text-indigo-500 hover:underline">สมัครเข้าใช้งาน</Link>
-        </p>
+        <div className="text-center mt-5 space-y-1">
+          <p className="text-xs text-gray-400">
+            ยังไม่มีบัญชี?{' '}
+            <Link href="/signup" className="text-indigo-500 hover:underline">สมัครเข้าใช้งาน</Link>
+          </p>
+          <p className="text-xs text-gray-400">
+            <Link href="/forgot-password" className="text-gray-400 hover:text-indigo-500 hover:underline">ลืมรหัสผ่าน?</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

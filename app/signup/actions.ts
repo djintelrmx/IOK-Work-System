@@ -9,26 +9,34 @@ export async function signupWithEmail(formData: FormData) {
 
   const supabase = await createClient()
 
-  // ตรวจว่าอีเมลนี้อยู่ในทีมไหม (admin ต้องเพิ่มก่อน)
-  const { data: member } = await supabase
-    .from('team_members')
-    .select('id, is_active')
-    .eq('email', email)
-    .single()
-
-  if (!member || !member.is_active) {
-    redirect('/signup?error=no_access')
-  }
-
-  const { error } = await supabase.auth.signUp({
+  // สมัคร auth account
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { full_name: name },
-    },
+    options: { data: { full_name: name } },
   })
 
   if (error) redirect('/signup?error=signup_failed')
+
+  // เพิ่มเข้า team_members ในสถานะ pending
+  if (data.user) {
+    const { data: existing } = await supabase
+      .from('team_members')
+      .select('id')
+      .eq('email', email)
+      .single()
+
+    if (!existing) {
+      await supabase.from('team_members').insert({
+        name,
+        email,
+        auth_id: data.user.id,
+        status: 'pending',
+        is_active: false,
+      })
+    }
+  }
+
   redirect('/signup?success=1')
 }
 
@@ -44,13 +52,21 @@ export async function loginWithEmail(formData: FormData) {
   // ตรวจสิทธิ์
   const { data: member } = await supabase
     .from('team_members')
-    .select('id, is_active')
+    .select('status, is_active')
     .eq('email', email)
     .single()
 
-  if (!member || !member.is_active) {
+  if (!member) {
     await supabase.auth.signOut()
     redirect('/login?error=no_access')
+  }
+  if (member.status === 'pending') {
+    await supabase.auth.signOut()
+    redirect('/login?error=pending')
+  }
+  if (!member.is_active || member.status === 'inactive') {
+    await supabase.auth.signOut()
+    redirect('/login?error=inactive')
   }
 
   redirect('/')

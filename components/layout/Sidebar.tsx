@@ -18,6 +18,9 @@ const navFinance = [
   { label: 'รายได้ - รายจ่าย', href: '/finance', icon: Coins },
   { label: 'รายงานประจำปี', href: '/report', icon: FileBarChart2 },
 ]
+const navAdmin = [
+  { label: 'จัดการผู้ใช้งาน', href: '/admin/users', icon: Users },
+]
 
 interface SidebarProps {
   userName?: string
@@ -57,15 +60,13 @@ export default function Sidebar({ userName, userEmail }: SidebarProps) {
           )
         })}
 
-        <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
-        {navFinance.map(({ label, href, icon: Icon }) => {
+        <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">ผู้ดูแล</p>
+        {navAdmin.map(({ label, href, icon: Icon }) => {
           const active = pathname.startsWith(href)
           return (
             <Link key={href} href={href}
-              className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10'
-              )}>
+              className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
               <Icon size={16} className="flex-shrink-0" />
               {label}
             </Link>
