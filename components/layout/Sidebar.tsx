@@ -3,29 +3,32 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, FileText, CalendarDays, Users,
-  Images, Coins, FileBarChart2
+  Images, Coins, FileBarChart2, LogOut
 } from 'lucide-react'
 import { clsx } from 'clsx'
 
 const nav = [
   { label: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { label: 'ใบสั่งงาน', href: '/jobs', icon: FileText, badge: '' },
+  { label: 'ใบสั่งงาน', href: '/jobs', icon: FileText },
   { label: 'ปฏิทินงาน', href: '/calendar', icon: CalendarDays },
   { label: 'ทีมงาน', href: '/team', icon: Users },
   { label: 'หลักฐาน / ผลงาน', href: '/evidence', icon: Images },
 ]
-
 const navFinance = [
   { label: 'รายได้ - รายจ่าย', href: '/finance', icon: Coins },
   { label: 'รายงานประจำปี', href: '/report', icon: FileBarChart2 },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  userName?: string
+  userEmail?: string
+}
+
+export default function Sidebar({ userName, userEmail }: SidebarProps) {
   const pathname = usePathname()
 
   return (
     <aside className="w-60 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col flex-shrink-0 h-screen sticky top-0">
-      {/* Logo */}
       <div className="p-5 border-b border-indigo-700">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
@@ -38,7 +41,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         <p className="text-indigo-400 text-xs font-semibold px-3 pt-3 pb-2 uppercase tracking-wider">หลัก</p>
         {nav.map(({ label, href, icon: Icon }) => {
@@ -47,9 +49,7 @@ export default function Sidebar() {
             <Link key={href} href={href}
               className={clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                active
-                  ? 'bg-white/15 border-l-2 border-white pl-[10px]'
-                  : 'hover:bg-white/10'
+                active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10'
               )}>
               <Icon size={16} className="flex-shrink-0" />
               {label}
@@ -64,9 +64,7 @@ export default function Sidebar() {
             <Link key={href} href={href}
               className={clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                active
-                  ? 'bg-white/15 border-l-2 border-white pl-[10px]'
-                  : 'hover:bg-white/10'
+                active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10'
               )}>
               <Icon size={16} className="flex-shrink-0" />
               {label}
@@ -75,16 +73,22 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* User */}
+      {/* User + Logout */}
       <div className="p-4 border-t border-indigo-700">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
-            A
+            {userName?.charAt(0) ?? 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">ผู้ดูแลระบบ IOK</p>
-            <p className="text-indigo-400 text-xs truncate">admin@kbu.ac.th</p>
+            <p className="text-sm font-medium truncate">{userName ?? 'ผู้ใช้งาน'}</p>
+            <p className="text-indigo-400 text-xs truncate">{userEmail ?? ''}</p>
           </div>
+          <form action="/auth/logout" method="POST">
+            <button type="submit" title="ออกจากระบบ"
+              className="text-indigo-400 hover:text-white transition-colors p-1">
+              <LogOut size={15} />
+            </button>
+          </form>
         </div>
       </div>
     </aside>
