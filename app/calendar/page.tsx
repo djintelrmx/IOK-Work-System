@@ -27,8 +27,10 @@ export default async function CalendarPage() {
   const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
   const startPad = firstDay.getDay() // 0=Sun
   const daysInMonth = lastDay.getDate()
-  const cells = Array.from({ length: startPad }, () => null)
-    .concat(Array.from({ length: daysInMonth }, (_, i) => i + 1))
+  const cells: (number | null)[] = [
+    ...Array.from({ length: startPad }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ]
   while (cells.length % 7 !== 0) cells.push(null)
 
   const todayStr = now.toISOString().split('T')[0]
