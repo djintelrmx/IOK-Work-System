@@ -2,7 +2,7 @@
 -- รันไฟล์นี้ใน Supabase SQL Editor
 
 -- ทีมงาน
-create table team_members (
+create table if not exists team_members (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   email text not null unique,
@@ -13,7 +13,7 @@ create table team_members (
 );
 
 -- งาน
-create table jobs (
+create table if not exists jobs (
   id uuid primary key default gen_random_uuid(),
 
   -- ข้อมูลงาน
@@ -47,7 +47,7 @@ create table jobs (
 );
 
 -- การมอบหมายงานให้ทีม
-create table job_assignments (
+create table if not exists job_assignments (
   id uuid primary key default gen_random_uuid(),
   job_id uuid references jobs(id) on delete cascade,
   member_id uuid references team_members(id) on delete cascade,
@@ -56,7 +56,7 @@ create table job_assignments (
 );
 
 -- เอกสาร/หลักฐาน
-create table job_documents (
+create table if not exists job_documents (
   id uuid primary key default gen_random_uuid(),
   job_id uuid references jobs(id) on delete cascade,
   file_name text not null,
@@ -78,13 +78,23 @@ alter table job_assignments enable row level security;
 alter table job_documents enable row level security;
 
 -- Policy ชั่วคราว: อนุญาตทุกคน (ปรับเป็น auth ทีหลัง)
-create policy "allow all" on team_members for all using (true);
-create policy "allow all" on jobs for all using (true);
-create policy "allow all" on job_assignments for all using (true);
-create policy "allow all" on job_documents for all using (true);
+do $$ begin
+  create policy "allow all" on team_members for all using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "allow all" on jobs for all using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "allow all" on job_assignments for all using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "allow all" on job_documents for all using (true);
+exception when duplicate_object then null; end $$;
 
--- ข้อมูลทดสอบ
-insert into team_members (name, email, role) values
+-- ข้อมูลทดสอบ (ใส่เฉพาะถ้ายังไม่มี)
+insert into team_members (name, email, role)
+values
   ('สมชาย ใจดี', 'somchai@kbu.ac.th', 'ช่างกล้อง'),
   ('สมหญิง รักงาน', 'somying@kbu.ac.th', 'ดูแลเสียง'),
-  ('วิชัย เทคนิค', 'wichai@kbu.ac.th', 'ไลฟ์สตรีม');
+  ('วิชัย เทคนิค', 'wichai@kbu.ac.th', 'ไลฟ์สตรีม')
+on conflict (email) do nothing;
