@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import type { Job } from '@/types/database'
 import Link from 'next/link'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
@@ -10,12 +11,12 @@ const STATUS_COLOR: Record<string, string> = {
 const ORDER_LABEL: Record<string, string> = { letter: 'ผ่านหนังสือ', direct: 'หัวหน้าสั่งตรง', other: 'อื่นๆ' }
 
 export default async function JobsPage() {
-  const { data: jobs } = await supabase
+  const { data: rawJobs } = await supabase
     .from('jobs')
     .select('*, job_assignments(*, team_members(id, name))')
     .order('job_date', { ascending: false })
 
-  const all = jobs ?? []
+  const all = (rawJobs ?? []) as (Job & { job_assignments: { member_id: string; team_members: { name: string } | null }[] })[]
   const fmt = (n: number) => n.toLocaleString('th-TH')
 
   return (

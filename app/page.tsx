@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import type { Job, TeamMember } from '@/types/database'
 import { FileText, Loader, TrendingUp, CalendarCheck } from 'lucide-react'
 import Link from 'next/link'
 
@@ -24,12 +25,13 @@ const JOB_ICON: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
-  const [{ data: jobs }, { data: members }] = await Promise.all([
+  const [{ data: rawJobs }, { data: rawMembers }] = await Promise.all([
     supabase.from('jobs').select('*, job_assignments(*, team_members(*))').order('job_date', { ascending: false }).limit(5),
     supabase.from('team_members').select('*').eq('is_active', true),
   ])
 
-  const allJobs = jobs ?? []
+  const allJobs = (rawJobs ?? []) as Job[]
+  const members = (rawMembers ?? []) as TeamMember[]
   const totalIncome = allJobs.reduce((s, j) => s + (j.income ?? 0), 0)
   const inProgress = allJobs.filter(j => j.status === 'in_progress').length
   const today = new Date().toISOString().split('T')[0]
@@ -107,11 +109,11 @@ export default async function DashboardPage() {
             <h2 className="font-semibold text-gray-700">ทีมงาน</h2>
             <Link href="/team" className="text-indigo-600 text-xs hover:underline">จัดการ →</Link>
           </div>
-          {(members ?? []).length === 0 ? (
+          {members.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">ยังไม่มีทีมงาน</p>
           ) : (
             <div className="space-y-3">
-              {(members ?? []).map(m => (
+              {members.map(m => (
                 <div key={m.id} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                     {m.name.charAt(0)}
