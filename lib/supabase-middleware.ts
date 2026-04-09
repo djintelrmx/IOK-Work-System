@@ -24,8 +24,12 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  // ถ้าไม่ได้ login และไม่ได้อยู่หน้า login → redirect ไป login
-  if (!user && pathname !== '/login' && !pathname.startsWith('/auth')) {
+  // หน้าที่ไม่ต้อง login
+  const publicPaths = ['/login', '/signup', '/auth']
+  const isPublic = publicPaths.some(p => pathname === p || pathname.startsWith(p))
+
+  // ถ้าไม่ได้ login และไม่ได้อยู่หน้า public → redirect ไป login
+  if (!user && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
