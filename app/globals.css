@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
 
+html { font-size: 17px; }
+
 * { font-family: 'Sarabun', sans-serif; }
 
 body { background: #f8fafc; color: #1e293b; }

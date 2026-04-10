@@ -45,8 +45,8 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
             <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK Logo" width={36} height={36} className="object-contain" />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-sm leading-tight">IOK Work System</p>
-            <p className="text-indigo-300 text-xs">Institute of KBU Creative Media</p>
+            <p className="font-bold text-base leading-tight">IOK Work System</p>
+            <p className="text-indigo-300 text-sm">Institute of KBU Creative Media</p>
           </div>
           {onClose && (
             <button onClick={onClose} className="text-indigo-300 hover:text-white p-1 -mr-1" aria-label="ปิดเมนู">
@@ -57,16 +57,16 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
       </div>
 
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        <p className="text-indigo-400 text-xs font-semibold px-3 pt-3 pb-2 uppercase tracking-wider">หลัก</p>
+        <p className="text-indigo-400 text-sm font-semibold px-3 pt-3 pb-2 uppercase tracking-wider">หลัก</p>
         {nav.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || (href !== '/' && pathname.startsWith(href))
           return (
             <Link key={href} href={href} onClick={onClose}
               className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-base transition-all',
                 active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10'
               )}>
-              <Icon size={16} className="flex-shrink-0" />
+              <Icon size={18} className="flex-shrink-0" />
               {label}
             </Link>
           )
@@ -75,14 +75,14 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
         {/* การเงิน — admin + staff เห็น billing/quotations, admin เห็นทั้งหมด */}
         {(accessLevel === 'admin' || accessLevel === 'staff') && (
           <>
-            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
+            <p className="text-indigo-400 text-sm font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
             {navBilling.map(({ label, href, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
                 <Link key={href} href={href} onClick={onClose}
-                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-base transition-all',
                     active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
-                  <Icon size={16} className="flex-shrink-0" />
+                  <Icon size={18} className="flex-shrink-0" />
                   {label}
                 </Link>
               )
@@ -91,9 +91,9 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
               const active = pathname.startsWith(href)
               return (
                 <Link key={href} href={href} onClick={onClose}
-                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-base transition-all',
                     active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
-                  <Icon size={16} className="flex-shrink-0" />
+                  <Icon size={18} className="flex-shrink-0" />
                   {label}
                 </Link>
               )
@@ -104,14 +104,14 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
         {/* ผู้ดูแล — เฉพาะ admin */}
         {accessLevel === 'admin' && (
           <>
-            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">ผู้ดูแล</p>
+            <p className="text-indigo-400 text-sm font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">ผู้ดูแล</p>
             {navAdmin.map(({ label, href, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
                 <Link key={href} href={href} onClick={onClose}
-                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-base transition-all',
                     active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
-                  <Icon size={16} className="flex-shrink-0" />
+                  <Icon size={18} className="flex-shrink-0" />
                   {label}
                 </Link>
               )
@@ -130,7 +130,7 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
             <Link href="/profile" onClick={onClose} className="block text-sm font-medium truncate hover:text-indigo-200 transition-colors">
               {userName ?? 'ผู้ใช้งาน'}
             </Link>
-            <p className="text-indigo-400 text-xs truncate">{userEmail ?? ''}</p>
+            <p className="text-indigo-400 text-sm truncate">{userEmail ?? ''}</p>
           </div>
           <form action="/auth/logout" method="POST">
             <button type="submit" title="ออกจากระบบ"

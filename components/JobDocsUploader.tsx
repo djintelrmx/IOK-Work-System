@@ -36,9 +36,9 @@ export default function JobDocsUploader({ jobId, initialDocs, canEdit }: Props) 
     setUploading(true)
     setError('')
     try {
-      // supabase client available from import
-      const ext = file.name.split('.').pop()
-      const path = `jobs/${jobId}/${Date.now()}_${file.name}`
+      const ext = file.name.split('.').pop() ?? 'bin'
+      const safeName = `${Date.now()}.${ext}`
+      const path = `jobs/${jobId}/${safeName}`
       const { error: upErr } = await supabase.storage.from('job-docs').upload(path, file, { upsert: false })
       if (upErr) throw upErr
       const { data } = supabase.storage.from('job-docs').getPublicUrl(path)

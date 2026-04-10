@@ -77,6 +77,7 @@ export default async function FinancePrintPage() {
             <div className="fp-org">
               <strong>IOK — Institute of KBU Creative Media</strong>
               <span>มหาวิทยาลัยเกษมบัณฑิต</span>
+              <span>1761 ถนนพัฒนาการ แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ 10250</span>
             </div>
           </div>
           <div>

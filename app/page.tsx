@@ -85,15 +85,15 @@ export default async function DashboardPage() {
                     {JOB_ICON[job.job_type] ?? '📋'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{job.title}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-base font-medium truncate">{job.title}</p>
+                    <p className="text-sm text-gray-400">
                       {job.client_org} •{' '}
                       {new Date(job.job_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-semibold text-green-600">{fmt(job.income ?? 0)} ฿</p>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[job.status]}`}>
+                    <p className="text-base font-semibold text-green-600">{fmt(job.income ?? 0)} ฿</p>
+                    <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[job.status]}`}>
                       {STATUS_LABEL[job.status]}
                     </span>
                   </div>
@@ -119,8 +119,8 @@ export default async function DashboardPage() {
                     {m.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-medium">{m.name}</p>
-                    <p className="text-xs text-gray-400">{m.role ?? m.email}</p>
+                    <p className="text-base font-medium">{m.name}</p>
+                    <p className="text-sm text-gray-400">{m.role ?? m.email}</p>
                   </div>
                 </div>
               ))}
@@ -141,8 +141,8 @@ function StatCard({ icon, bg, value, label, sub }: {
         {icon}
       </div>
       <p className="text-2xl font-bold text-gray-800">{value}</p>
-      <p className="text-sm text-gray-600 mt-0.5">{label}</p>
-      <p className="text-xs text-gray-400">{sub}</p>
+      <p className="text-base text-gray-600 mt-0.5">{label}</p>
+      <p className="text-sm text-gray-400">{sub}</p>
     </div>
   )
 }

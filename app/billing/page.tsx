@@ -59,15 +59,15 @@ export default async function BillingPage() {
           <p className="text-sm text-gray-400 text-center py-12">ยังไม่มีข้อมูลงาน</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[680px]">
+            <table className="w-full text-base min-w-[680px]">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">#</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">งาน / หน่วยงาน</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">วันที่</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">ยอดเงิน</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">สถานะ</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500">จัดการ</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">#</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">งาน / หน่วยงาน</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">วันที่</th>
+                  <th className="text-right px-4 py-3 text-sm font-semibold text-gray-500">ยอดเงิน</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">สถานะ</th>
+                  <th className="text-center px-4 py-3 text-sm font-semibold text-gray-500">จัดการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">

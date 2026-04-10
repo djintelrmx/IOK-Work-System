@@ -37,16 +37,16 @@ export default async function JobsPage() {
           {all.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-16">ยังไม่มีข้อมูลงาน</p>
           ) : (
-            <table className="w-full text-sm min-w-[700px]">
+            <table className="w-full text-base min-w-[700px]">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">งาน</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">หน่วยงาน</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">การสั่งงาน</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">วันที่</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ทีม</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">รายได้</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">สถานะ</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">งาน</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">หน่วยงาน</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">การสั่งงาน</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">วันที่</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">ทีม</th>
+                  <th className="text-right px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">รายได้</th>
+                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">สถานะ</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
@@ -58,7 +58,7 @@ export default async function JobsPage() {
                         <p className="text-xs font-mono font-semibold text-indigo-500 mb-0.5">{(job as any).job_number}</p>
                       )}
                       <p className="font-medium text-gray-800">{job.title}</p>
-                      <p className="text-xs text-gray-400">{job.job_type}</p>
+                      <p className="text-sm text-gray-400">{job.job_type}</p>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium mr-1 ${job.source === 'ภายในมหาวิทยาลัย' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
@@ -66,8 +66,8 @@ export default async function JobsPage() {
                       </span>
                       {job.client_org}
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-500">{ORDER_LABEL[job.order_type]}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs">
+                    <td className="px-4 py-3 text-sm text-gray-500">{ORDER_LABEL[job.order_type]}</td>
+                    <td className="px-4 py-3 text-gray-500 text-sm">
                       {new Date(job.job_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-4 py-3">
@@ -83,12 +83,12 @@ export default async function JobsPage() {
                     </td>
                     <td className="px-4 py-3 text-right font-semibold text-gray-800">{fmt(job.income ?? 0)} ฿</td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLOR[job.status]}`}>
+                      <span className={`text-sm px-2 py-1 rounded-full font-medium ${STATUS_COLOR[job.status]}`}>
                         {STATUS_LABEL[job.status]}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/jobs/${job.id}`} className="text-indigo-500 hover:underline text-xs">ดู</Link>
+                      <Link href={`/jobs/${job.id}`} className="text-indigo-500 hover:underline text-sm">ดู</Link>
                     </td>
                   </tr>
                 ))}

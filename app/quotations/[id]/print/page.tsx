@@ -82,7 +82,8 @@ export default async function QuotationPrintPage({ params }: { params: Promise<{
             <div className="qt-org">
               <strong>IOK — Institute of KBU Creative Media</strong>
               <span>มหาวิทยาลัยเกษมบัณฑิต</span>
-              <span>1761 ถ.เพชรบุรีตัดใหม่ แขวงบางกะปิ กทม. 10240</span>
+              <span>1761 ถนนพัฒนาการ แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ 10250</span>
+              <span>โทร. 02-320-2777 | โทรสาร. 02-321-4444</span>
             </div>
           </div>
           <div className="qt-doc-box">
@@ -104,7 +105,7 @@ export default async function QuotationPrintPage({ params }: { params: Promise<{
             <div className="qt-party-label">ผู้เสนอราคา</div>
             <div className="qt-party-name">IOK Creative Media Unit</div>
             <div className="qt-party-sub">มหาวิทยาลัยเกษมบัณฑิต</div>
-            <div className="qt-party-sub">โทร. — | อีเมล: iok@kbu.ac.th</div>
+            <div className="qt-party-sub">โทร. 02-320-2777 | อีเมล: iok@kbu.ac.th</div>
           </div>
           <div>
             <div className="qt-party-label">เสนอให้แก่</div>

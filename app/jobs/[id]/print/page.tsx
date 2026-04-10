@@ -97,6 +97,8 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
             <div className="p-org">
               <strong>IOK — Institute of KBU Creative Media</strong>
               <span>มหาวิทยาลัยเกษมบัณฑิต</span>
+              <span>1761 ถนนพัฒนาการ แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ 10250</span>
+              <span>โทร. 02-320-2777 | โทรสาร. 02-321-4444</span>
             </div>
           </div>
           <div className="p-doc-box">

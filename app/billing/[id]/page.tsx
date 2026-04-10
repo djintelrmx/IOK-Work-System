@@ -84,7 +84,8 @@ export default async function BillingInvoicePage({ params }: { params: Promise<{
             <div className="inv-org">
               <strong>IOK — Institute of KBU Creative Media</strong>
               <span>มหาวิทยาลัยเกษมบัณฑิต</span>
-              <span>1761 ถ.เพชรบุรีตัดใหม่ แขวงบางกะปิ กทม. 10240</span>
+              <span>1761 ถนนพัฒนาการ แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ 10250</span>
+              <span>โทร. 02-320-2777 | โทรสาร. 02-321-4444</span>
             </div>
           </div>
           <div className="inv-doc-box">
@@ -100,7 +101,7 @@ export default async function BillingInvoicePage({ params }: { params: Promise<{
             <div className="inv-party-label">ผู้ออกใบแจ้งหนี้</div>
             <div className="inv-party-name">IOK Creative Media Unit</div>
             <div className="inv-party-sub">มหาวิทยาลัยเกษมบัณฑิต</div>
-            <div className="inv-party-sub">โทร. — | อีเมล: iok@kbu.ac.th</div>
+            <div className="inv-party-sub">โทร. 02-320-2777 | อีเมล: iok@kbu.ac.th</div>
           </div>
           <div>
             <div className="inv-party-label">ลูกค้า / ผู้ว่าจ้าง</div>
