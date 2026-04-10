@@ -48,7 +48,7 @@ export default function AppShell({ children, userName, userEmail, accessLevel = 
           </button>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5">
-              <Image src="/logo.png" alt="IOK Logo" width={28} height={28} className="object-contain" />
+              <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.png" alt="IOK Logo" width={28} height={28} className="object-contain" />
             </div>
             <div>
               <p className="font-bold text-sm leading-tight">IOK Work System</p>
