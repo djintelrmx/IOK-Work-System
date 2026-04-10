@@ -10,6 +10,8 @@ export interface TeamMember {
   role: string | null
   avatar_url: string | null
   is_active: boolean
+  status: string
+  auth_id: string | null
   created_at: string
 }
 
