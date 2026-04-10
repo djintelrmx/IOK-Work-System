@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, FileText, CalendarDays, Users,
   Images, Coins, FileBarChart2, LogOut, Receipt, ClipboardList,
-  Building2, Wallet
+  Building2, Wallet, Package
 } from 'lucide-react'
 import { clsx } from 'clsx'
 
@@ -74,6 +74,13 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
             </Link>
           )
         })}
+
+        <a href="https://iok.metaallsolution.com" target="_blank" rel="noopener noreferrer" onClick={onClose}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-base transition-all hover:bg-white/10">
+          <Package size={18} className="flex-shrink-0" />
+          ยืม-คืนอุปกรณ์
+          <span className="ml-auto text-indigo-400 text-xs">↗</span>
+        </a>
 
         {/* การเงิน — admin + staff เห็น billing/quotations, admin เห็นทั้งหมด */}
         {(accessLevel === 'admin' || accessLevel === 'staff') && (
