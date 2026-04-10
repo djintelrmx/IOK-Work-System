@@ -42,7 +42,7 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
       <div className="p-4 border-b border-indigo-700">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5">
-            <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.png" alt="IOK Logo" width={36} height={36} className="object-contain" />
+            <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK Logo" width={36} height={36} className="object-contain" />
           </div>
           <div className="flex-1">
             <p className="font-bold text-sm leading-tight">IOK Work System</p>

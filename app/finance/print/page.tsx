@@ -81,7 +81,7 @@ export default async function FinancePrintPage() {
         <div className="page">
           <div className="header">
             <div className="logo-box">
-              <img src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.png" alt="IOK" className="logo-img" onError={(e: any) => { e.target.style.display='none' }} />
+              <img src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK" className="logo-img" onError={(e: any) => { e.target.style.display='none' }} />
               <div className="org">
                 <strong>IOK — Institute of KBU Creative Media</strong>
                 มหาวิทยาลัยเกษมบัณฑิต

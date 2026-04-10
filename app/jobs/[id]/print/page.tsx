@@ -106,7 +106,7 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
           {/* Header */}
           <div className="header">
             <div className="logo-box">
-              <img src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.png" alt="IOK Logo" className="logo-img" onError={(e: any) => { e.target.style.display='none' }} />
+              <img src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK Logo" className="logo-img" onError={(e: any) => { e.target.style.display='none' }} />
               <div className="org-name">
                 <strong>IOK — Institute of KBU Creative Media</strong>
                 มหาวิทยาลัยเกษมบัณฑิต

@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
         <div className="flex flex-col items-center mb-6">
           <div className="w-28 h-28 flex items-center justify-center mb-3">
-            <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.png" alt="IOK Logo" width={112} height={112} className="object-contain" />
+            <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK Logo" width={112} height={112} className="object-contain" />
           </div>
           <h1 className="text-xl font-bold text-gray-800 text-center leading-tight">IOK Work System</h1>
           <p className="text-sm text-gray-400 text-center">Institute of KBU Creative Media</p>
