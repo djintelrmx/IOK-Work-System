@@ -42,6 +42,10 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
               <select name="job_type" required defaultValue={job.job_type} className={inputCls}>
                 {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
+              {job.job_type === 'อื่นๆ' && (
+                <input name="job_type_custom" defaultValue={(job as any).job_type_custom ?? ''}
+                  className={inputCls + ' mt-2'} placeholder="ระบุประเภทงาน..." />
+              )}
             </div>
             <div>
               <label className={labelCls}>แหล่งที่มาของงาน *</label>

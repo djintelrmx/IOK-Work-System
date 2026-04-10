@@ -6,6 +6,7 @@ import { updateJobStatus } from './actions'
 import { getAccessLevel } from '@/lib/access'
 import JobDocsUploader from '@/components/JobDocsUploader'
 import PaymentStatusForm from '@/components/PaymentStatusForm'
+import CompensationEditor from '@/components/CompensationEditor'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -29,7 +30,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   if (!raw) notFound()
 
   const job = raw as Job & {
-    job_assignments: { role_in_job: string | null; team_members: TeamMember }[]
+    job_assignments: { id: string; role_in_job: string | null; compensation: number; team_members: TeamMember }[]
     job_documents: JobDocument[]
   }
 
@@ -134,19 +135,23 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       {job.job_assignments.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-100 p-5">
           <h2 className="font-semibold text-gray-700 mb-4">ทีมงาน ({job.job_assignments.length} คน)</h2>
-          <div className="space-y-2">
-            {job.job_assignments.map((a, i) => (
-              <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-                <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  {a.team_members?.name?.charAt(0) ?? '?'}
+          {(accessLevel === 'admin' || accessLevel === 'staff') ? (
+            <CompensationEditor assignments={job.job_assignments} />
+          ) : (
+            <div className="space-y-2">
+              {job.job_assignments.map((a, i) => (
+                <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+                  <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    {a.team_members?.name?.charAt(0) ?? '?'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{a.team_members?.name}</p>
+                    <p className="text-xs text-gray-400">{a.role_in_job ?? a.team_members?.role ?? '—'}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-800">{a.team_members?.name}</p>
-                  <p className="text-xs text-gray-400">{a.role_in_job ?? a.team_members?.role ?? '—'}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -179,6 +184,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[100px]">
           🖨️ พิมพ์ใบงาน
         </Link>
+        <a href="https://iok.metaallsolution.com" target="_blank" rel="noopener noreferrer"
+          className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[120px]">
+          📦 ยืมคืนอุปกรณ์
+        </a>
         <Link href="/jobs"
           className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[100px]">
           กลับรายการ

@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import type { Job, TeamMember } from '@/types/database'
 import { FileText, Loader, TrendingUp, CalendarCheck } from 'lucide-react'
 import Link from 'next/link'
+import IncomeChart from '@/components/charts/IncomeChart'
 
 const STATUS_LABEL: Record<string, string> = {
   pending: 'รอดำเนินการ',
@@ -25,9 +26,10 @@ const JOB_ICON: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
-  const [{ data: rawJobs }, { data: rawMembers }] = await Promise.all([
+  const [{ data: rawJobs }, { data: rawMembers }, { data: allJobsRaw }] = await Promise.all([
     supabase.from('jobs').select('*, job_assignments(*, team_members(*))').order('job_date', { ascending: false }).limit(5),
     supabase.from('team_members').select('*').eq('is_active', true),
+    supabase.from('jobs').select('job_date, income, expense').order('job_date'),
   ])
 
   const allJobs = (rawJobs ?? []) as Job[]
@@ -37,6 +39,27 @@ export default async function DashboardPage() {
   const today = new Date().toISOString().split('T')[0]
   const upcoming = allJobs.filter(j => j.job_date >= today).length
   const fmt = (n: number) => n.toLocaleString('th-TH')
+
+  // สร้างข้อมูลกราฟรายเดือน (12 เดือนล่าสุด)
+  const monthMap: Record<string, { income: number; expense: number }> = {}
+  const now = new Date()
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    monthMap[key] = { income: 0, expense: 0 }
+  }
+  for (const j of (allJobsRaw ?? []) as any[]) {
+    const key = j.job_date?.slice(0, 7)
+    if (key && monthMap[key]) {
+      monthMap[key].income += j.income ?? 0
+      monthMap[key].expense += j.expense ?? 0
+    }
+  }
+  const chartData = Object.entries(monthMap).map(([key, val]) => {
+    const [y, m] = key.split('-')
+    const monthNames = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+    return { month: `${monthNames[parseInt(m) - 1]} ${parseInt(y) + 543 - 2500}`, ...val }
+  })
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6">
@@ -62,6 +85,18 @@ export default async function DashboardPage() {
           value={`${fmt(totalIncome)} ฿`} label="รายได้รวม" sub="ปีนี้" />
         <StatCard icon={<CalendarCheck size={18} className="text-purple-600" />} bg="bg-purple-50"
           value={upcoming} label="งานที่กำลังจะมา" sub="วันนี้เป็นต้นไป" />
+      </div>
+
+      {/* กราฟรายได้-รายจ่ายรายเดือน */}
+      <div className="bg-white rounded-xl border border-gray-100 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-gray-700">รายได้ - รายจ่าย รายเดือน</h2>
+          <div className="flex items-center gap-3 text-xs text-gray-400">
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-indigo-500 inline-block" />รายได้</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-orange-400 inline-block" />รายจ่าย</span>
+          </div>
+        </div>
+        <IncomeChart data={chartData} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -14,7 +14,8 @@ export async function updateJob(jobId: string, formData: FormData) {
 
   await supabase.from('jobs').update({
     title:          formData.get('title') as string,
-    job_type:       formData.get('job_type') as string,
+    job_type:        formData.get('job_type') as string,
+    job_type_custom: (formData.get('job_type') === 'อื่นๆ' ? formData.get('job_type_custom') as string : null) || null,
     source:         formData.get('source') as string,
     client_org:     formData.get('client_org') as string,
     location:       (formData.get('location') as string) || null,
