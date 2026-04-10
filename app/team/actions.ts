@@ -1,11 +1,13 @@
 'use server'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 
 export async function addTeamMember(formData: FormData) {
   const name = formData.get('name') as string
   const email = formData.get('email') as string
   const role = (formData.get('role') as string) || null
+
+  const supabase = await createClient()
 
   const { data: existing } = await supabase
     .from('team_members')
@@ -23,7 +25,7 @@ export async function addTeamMember(formData: FormData) {
     role,
     status: 'active',
     is_active: true,
-  })
+  } as any)
 
   redirect('/team')
 }
