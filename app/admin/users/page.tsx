@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase-server'
-import { approveUser, rejectUser, resetPassword } from './actions'
+import { approveUser, rejectUser, activateUser, deleteUser, updateRole, updateName, addUser, resetPassword } from './actions'
 
 const STATUS_STYLE: Record<string, string> = {
   pending:  'bg-amber-100 text-amber-700',
@@ -9,6 +9,8 @@ const STATUS_STYLE: Record<string, string> = {
 const STATUS_LABEL: Record<string, string> = {
   pending: 'รออนุมัติ', active: 'ใช้งานได้', inactive: 'ถูกระงับ',
 }
+
+const ROLES = ['ช่างกล้อง','ดูแลเสียง','ไลฟ์สตรีม','ระบบแสง','ตัดต่อวิดีโอ','ผู้ประสานงาน','ผู้ดูแลระบบ','อื่นๆ']
 
 export default async function AdminUsersPage() {
   const supabase = await createClient()
@@ -20,41 +22,99 @@ export default async function AdminUsersPage() {
 
   const all = members ?? []
   const pending = all.filter(m => m.status === 'pending')
+  const active  = all.filter(m => m.status === 'active')
+  const inactive = all.filter(m => m.status === 'inactive')
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
-      <div>
-        <h1 className="text-xl font-bold text-gray-800">จัดการผู้ใช้งาน</h1>
-        <p className="text-sm text-gray-400">
-          รออนุมัติ <span className="font-semibold text-amber-600">{pending.length} คน</span>
-          {' · '}ทั้งหมด {all.length} คน
-        </p>
+    <div className="p-4 md:p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold text-gray-800">จัดการผู้ใช้งาน</h1>
+          <p className="text-sm text-gray-400">
+            รออนุมัติ <span className="font-semibold text-amber-600">{pending.length} คน</span>
+            {' · '}ทั้งหมด {all.length} คน
+          </p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-green-50 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-green-600">{active.length}</p>
+          <p className="text-xs text-green-700 font-medium mt-0.5">ใช้งานได้</p>
+        </div>
+        <div className="bg-amber-50 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-amber-600">{pending.length}</p>
+          <p className="text-xs text-amber-700 font-medium mt-0.5">รออนุมัติ</p>
+        </div>
+        <div className="bg-red-50 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-red-500">{inactive.length}</p>
+          <p className="text-xs text-red-600 font-medium mt-0.5">ถูกระงับ</p>
+        </div>
+      </div>
+
+      {/* เพิ่มผู้ใช้ */}
+      <div className="bg-white rounded-xl border border-gray-100 p-5">
+        <h2 className="font-semibold text-gray-700 mb-4">+ เพิ่มผู้ใช้งานใหม่</h2>
+        <form action={addUser} className="flex flex-wrap gap-3 items-end">
+          <div className="flex-1 min-w-[160px]">
+            <label className="text-xs font-semibold text-gray-500 block mb-1">ชื่อ-นามสกุล</label>
+            <input name="name" required placeholder="ชื่อ นามสกุล"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          </div>
+          <div className="flex-1 min-w-[180px]">
+            <label className="text-xs font-semibold text-gray-500 block mb-1">อีเมล</label>
+            <input name="email" type="email" required placeholder="email@example.com"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          </div>
+          <div className="min-w-[160px]">
+            <label className="text-xs font-semibold text-gray-500 block mb-1">บทบาท</label>
+            <select name="role"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+              <option value="">— ไม่ระบุ —</option>
+              {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+          <button type="submit"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-5 py-2 rounded-lg transition-colors font-medium whitespace-nowrap">
+            เพิ่มผู้ใช้
+          </button>
+        </form>
+        <p className="text-xs text-gray-400 mt-3">* ผู้ใช้ที่เพิ่มจะสามารถตั้งรหัสผ่านได้โดยไปสมัครที่หน้า <span className="font-mono">/signup</span> ด้วยอีเมลเดียวกัน</p>
       </div>
 
       {/* รออนุมัติ */}
       {pending.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <p className="text-sm font-semibold text-amber-700 mb-3">⏳ รออนุมัติ ({pending.length} คน)</p>
-          <div className="space-y-2">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+          <p className="text-sm font-semibold text-amber-700 mb-4">⏳ รออนุมัติ ({pending.length} คน)</p>
+          <div className="space-y-3">
             {pending.map(m => (
-              <div key={m.id} className="bg-white rounded-lg border border-amber-100 p-3 flex flex-wrap items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-amber-400 flex items-center justify-center text-white font-bold flex-shrink-0">
-                  {m.name.charAt(0)}
+              <div key={m.id} className="bg-white rounded-xl border border-amber-100 p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-white font-bold flex-shrink-0 text-sm">
+                    {m.name?.charAt(0) ?? '?'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-800">{m.name}</p>
+                    <p className="text-xs text-gray-400">{m.email}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-800">{m.name}</p>
-                  <p className="text-xs text-gray-400">{m.email}</p>
-                </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <form action={approveUser.bind(null, m.id)}>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <form action={approveUser.bind(null, m.id)} className="flex flex-wrap gap-2 items-center flex-1">
+                    <select name="role"
+                      className="flex-1 min-w-[160px] border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+                      <option value="">— กำหนดบทบาท —</option>
+                      {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
                     <button type="submit"
-                      className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg transition-colors">
+                      className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium">
                       ✓ อนุมัติ
                     </button>
                   </form>
                   <form action={rejectUser.bind(null, m.id)}>
                     <button type="submit"
-                      className="border border-red-200 text-red-500 hover:bg-red-50 text-xs px-3 py-1.5 rounded-lg transition-colors">
+                      className="border border-red-200 text-red-500 hover:bg-red-50 text-sm px-4 py-2 rounded-lg transition-colors">
                       ✕ ปฏิเสธ
                     </button>
                   </form>
@@ -67,61 +127,89 @@ export default async function AdminUsersPage() {
 
       {/* รายชื่อทั้งหมด */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[500px]">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อ</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">อีเมล</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">บทบาท</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">สถานะ</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {all.map(m => (
-              <tr key={m.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">
-                      {m.name.charAt(0)}
-                    </div>
-                    <span className="font-medium">{m.name}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-gray-500">{m.email}</td>
-                <td className="px-4 py-3 text-gray-500">{m.role ?? '—'}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_STYLE[m.status ?? 'active']}`}>
-                    {STATUS_LABEL[m.status ?? 'active']}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-2 justify-end">
-                    {m.status === 'pending' && (
-                      <form action={approveUser.bind(null, m.id)}>
-                        <button className="text-green-600 hover:underline text-xs">อนุมัติ</button>
-                      </form>
-                    )}
-                    {m.status === 'active' && (
-                      <form action={rejectUser.bind(null, m.id)}>
-                        <button className="text-red-400 hover:underline text-xs">ระงับ</button>
-                      </form>
-                    )}
-                    {m.status === 'inactive' && (
-                      <form action={approveUser.bind(null, m.id)}>
-                        <button className="text-indigo-500 hover:underline text-xs">เปิดใช้งาน</button>
-                      </form>
-                    )}
-                    <form action={resetPassword.bind(null, m.email)}>
-                      <button className="text-gray-400 hover:underline text-xs">Reset รหัสผ่าน</button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="font-semibold text-gray-700">รายชื่อผู้ใช้ทั้งหมด</h2>
+        </div>
+        <div className="divide-y divide-gray-50">
+          {all.map(m => (
+            <div key={m.id} className="p-4 hover:bg-gray-50">
+              {/* แถวบน: avatar + ชื่อ + อีเมล + สถานะ */}
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                  {m.name?.charAt(0) ?? '?'}
+                </div>
+                <div className="flex-1 min-w-0">
+                  {/* ชื่อ — แก้ไขได้ inline */}
+                  <form action={updateName.bind(null, m.id)} className="flex items-center gap-2 mb-0.5">
+                    <input name="name" defaultValue={m.name}
+                      className="font-medium text-gray-800 text-sm bg-transparent border-b border-transparent hover:border-gray-300 focus:border-indigo-400 focus:outline-none w-full max-w-[200px] py-0.5" />
+                    <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500 flex-shrink-0">บันทึก</button>
+                  </form>
+                  <p className="text-xs text-gray-400">{m.email}</p>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full font-medium flex-shrink-0 ${STATUS_STYLE[m.status ?? 'active']}`}>
+                  {STATUS_LABEL[m.status ?? 'active']}
+                </span>
+              </div>
+
+              {/* แถวกลาง: บทบาท */}
+              <form action={updateRole.bind(null, m.id)} className="flex items-center gap-2 mb-3">
+                <label className="text-xs text-gray-400 flex-shrink-0">บทบาท:</label>
+                <select name="role" defaultValue={m.role ?? ''}
+                  className="text-xs border border-gray-200 rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300 flex-1 max-w-[200px]">
+                  <option value="">— ไม่ระบุ —</option>
+                  {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                </select>
+                <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500">บันทึก</button>
+              </form>
+
+              {/* แถวล่าง: Action buttons */}
+              <div className="flex flex-wrap gap-2">
+                {/* Reset รหัสผ่าน */}
+                <form action={resetPassword.bind(null, m.email)}>
+                  <button type="submit"
+                    className="text-xs border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 text-gray-500 px-3 py-1.5 rounded-lg transition-colors">
+                    🔑 Reset รหัสผ่าน
+                  </button>
+                </form>
+
+                {/* ระงับ / เปิดใช้งาน */}
+                {m.status === 'active' && (
+                  <form action={rejectUser.bind(null, m.id)}>
+                    <button type="submit"
+                      className="text-xs border border-amber-200 hover:bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg transition-colors">
+                      🚫 ระงับการใช้งาน
+                    </button>
+                  </form>
+                )}
+                {m.status === 'inactive' && (
+                  <form action={activateUser.bind(null, m.id)}>
+                    <button type="submit"
+                      className="text-xs border border-green-200 hover:bg-green-50 text-green-600 px-3 py-1.5 rounded-lg transition-colors">
+                      ✓ เปิดใช้งาน
+                    </button>
+                  </form>
+                )}
+                {m.status === 'pending' && (
+                  <form action={approveUser.bind(null, m.id)}>
+                    <input type="hidden" name="role" value="" />
+                    <button type="submit"
+                      className="text-xs border border-green-200 hover:bg-green-50 text-green-600 px-3 py-1.5 rounded-lg transition-colors">
+                      ✓ อนุมัติ
+                    </button>
+                  </form>
+                )}
+
+                {/* ลบ */}
+                <form action={deleteUser.bind(null, m.id)}>
+                  <button type="submit"
+                    className="text-xs border border-red-200 hover:bg-red-50 text-red-500 px-3 py-1.5 rounded-lg transition-colors">
+                    🗑 ลบผู้ใช้
+                  </button>
+                </form>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
