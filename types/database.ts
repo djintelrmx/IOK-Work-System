@@ -9,8 +9,10 @@ export interface TeamMember {
   email: string
   role: string | null
   avatar_url: string | null
+  phone: string | null
   is_active: boolean
   status: string
+  access_level: string
   auth_id: string | null
   created_at: string
 }

@@ -11,7 +11,7 @@ export default async function FinancePrintPage() {
     .select('id, title, job_date, source, client_org, income, expense, status')
     .order('job_date')
 
-  const all = jobs ?? []
+  const all = (jobs ?? []) as any[]
   const totalIncome  = all.reduce((s, j) => s + (j.income  ?? 0), 0)
   const totalExpense = all.reduce((s, j) => s + (j.expense ?? 0), 0)
   const totalProfit  = totalIncome - totalExpense

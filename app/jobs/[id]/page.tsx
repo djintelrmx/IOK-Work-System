@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { updateJobStatus } from './actions'
 import { getAccessLevel } from '@/lib/access'
+import JobDocsUploader from '@/components/JobDocsUploader'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -12,7 +13,6 @@ const STATUS_COLOR: Record<string, string> = {
   done: 'bg-green-100 text-green-700',
 }
 const ORDER_LABEL: Record<string, string> = { letter: 'ผ่านหนังสือ', direct: 'หัวหน้าสั่งตรง', other: 'อื่นๆ' }
-const FILE_ICON: Record<string, string> = { image: '🖼️', video: '🎬', pdf: '📄', link: '🔗' }
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -147,24 +147,11 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       )}
 
       {/* เอกสาร / หลักฐาน */}
-      {job.job_documents.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 p-5">
-          <h2 className="font-semibold text-gray-700 mb-4">เอกสาร / หลักฐาน ({job.job_documents.length} ไฟล์)</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {job.job_documents.map(doc => (
-              <a key={doc.id} href={doc.file_url} target="_blank" rel="noopener noreferrer"
-                className="border border-gray-100 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                <div className="h-20 bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-3xl">
-                  {FILE_ICON[doc.file_type ?? ''] ?? '📄'}
-                </div>
-                <div className="p-2">
-                  <p className="text-xs font-medium text-gray-700 truncate">{doc.file_name}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+      <JobDocsUploader
+        jobId={id}
+        initialDocs={job.job_documents}
+        canEdit={accessLevel === 'admin' || accessLevel === 'staff'}
+      />
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3 pb-6">

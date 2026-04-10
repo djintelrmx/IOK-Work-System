@@ -21,11 +21,16 @@ export default async function TeamPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {members.map(m => (
-          <div key={m.id} className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <Link key={m.id} href={`/team/${m.id}`}
+            className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md hover:border-indigo-100 transition-all block">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 rounded-xl bg-indigo-500 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-                {m.name.charAt(0)}
-              </div>
+              {m.avatar_url ? (
+                <img src={m.avatar_url} alt={m.name} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
+              ) : (
+                <div className="w-14 h-14 rounded-xl bg-indigo-500 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+                  {m.name.charAt(0)}
+                </div>
+              )}
               <div>
                 <p className="font-semibold text-gray-800">{m.name}</p>
                 <p className="text-xs text-gray-400">{m.email}</p>
@@ -39,7 +44,7 @@ export default async function TeamPage() {
                 {m.role}
               </span>
             )}
-          </div>
+          </Link>
         ))}
 
         {members.length === 0 && (

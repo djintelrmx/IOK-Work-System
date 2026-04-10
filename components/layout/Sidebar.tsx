@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, FileText, CalendarDays, Users,
-  Images, Coins, FileBarChart2, LogOut
+  Images, Coins, FileBarChart2, LogOut, Receipt, UserCircle
 } from 'lucide-react'
 import { clsx } from 'clsx'
 
@@ -18,6 +18,9 @@ const nav = [
 const navFinance = [
   { label: 'รายได้ - รายจ่าย', href: '/finance', icon: Coins },
   { label: 'รายงานประจำปี', href: '/report', icon: FileBarChart2 },
+]
+const navBilling = [
+  { label: 'ออกบิล', href: '/billing', icon: Receipt },
 ]
 const navAdmin = [
   { label: 'จัดการผู้ใช้งาน', href: '/admin/users', icon: Users },
@@ -68,10 +71,27 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
           )
         })}
 
+        {/* ออกบิล — admin + staff */}
+        {(accessLevel === 'admin' || accessLevel === 'staff') && (
+          <>
+            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
+            {navBilling.map(({ label, href, icon: Icon }) => {
+              const active = pathname.startsWith(href)
+              return (
+                <Link key={href} href={href} onClick={onClose}
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                    active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
+                  <Icon size={16} className="flex-shrink-0" />
+                  {label}
+                </Link>
+              )
+            })}
+          </>
+        )}
+
         {/* การเงิน — เฉพาะ admin */}
         {accessLevel === 'admin' && (
           <>
-            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
             {navFinance.map(({ label, href, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
@@ -108,11 +128,13 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
       {/* User + Logout */}
       <div className="p-4 border-t border-indigo-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+          <Link href="/profile" onClick={onClose} className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold flex-shrink-0 hover:bg-indigo-400 transition-colors">
             {userName?.charAt(0) ?? 'U'}
-          </div>
+          </Link>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{userName ?? 'ผู้ใช้งาน'}</p>
+            <Link href="/profile" onClick={onClose} className="block text-sm font-medium truncate hover:text-indigo-200 transition-colors">
+              {userName ?? 'ผู้ใช้งาน'}
+            </Link>
             <p className="text-indigo-400 text-xs truncate">{userEmail ?? ''}</p>
           </div>
           <form action="/auth/logout" method="POST">
