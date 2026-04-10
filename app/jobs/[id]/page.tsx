@@ -12,11 +12,12 @@ const STATUS_COLOR: Record<string, string> = {
 const ORDER_LABEL: Record<string, string> = { letter: 'ผ่านหนังสือ', direct: 'หัวหน้าสั่งตรง', other: 'อื่นๆ' }
 const FILE_ICON: Record<string, string> = { image: '🖼️', video: '🎬', pdf: '📄', link: '🔗' }
 
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
+export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const { data: raw } = await supabase
     .from('jobs')
     .select('*, job_assignments(*, team_members(*)), job_documents(*)')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!raw) notFound()
@@ -136,7 +137,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
 
       {/* Actions */}
       <div className="flex gap-3 pb-6">
-        <Link href={`/jobs/${job.id}/edit`}
+        <Link href={`/jobs/${id}/edit`}
           className="flex-1 text-center border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm py-2.5 rounded-xl transition-colors font-medium">
           ✏️ แก้ไขงาน
         </Link>
