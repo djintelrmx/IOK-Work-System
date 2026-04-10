@@ -1,7 +1,13 @@
 import { supabase } from '@/lib/supabase'
 import type { Job } from '@/types/database'
+import { getAccessLevel } from '@/lib/access'
+import { redirect } from 'next/navigation'
+import PrintButton from '@/components/PrintButton'
 
 export default async function FinancePage() {
+  const level = await getAccessLevel()
+  if (level !== 'admin') redirect('/')
+
   const { data: raw } = await supabase
     .from('jobs')
     .select('id, title, job_date, income, expense, status, source')
@@ -16,9 +22,18 @@ export default async function FinancePage() {
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-5">
-      <div>
-        <h1 className="text-xl font-bold text-gray-800">รายได้ - รายจ่าย</h1>
-        <p className="text-sm text-gray-400">สรุปการเงินทั้งหมด</p>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-xl font-bold text-gray-800">รายได้ - รายจ่าย</h1>
+          <p className="text-sm text-gray-400">สรุปการเงินทั้งหมด</p>
+        </div>
+        <div className="flex gap-2">
+          <PrintButton label="🖨️ PDF" className="border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm px-4 py-2 rounded-lg transition-colors" />
+          <a href="/api/export/finance"
+            className="border border-green-200 text-green-700 hover:bg-green-50 text-sm px-4 py-2 rounded-lg transition-colors font-medium">
+            📊 Excel (CSV)
+          </a>
+        </div>
       </div>
 
       {/* สรุป */}

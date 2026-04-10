@@ -3,6 +3,8 @@ import type { Job, TeamMember, JobDocument } from '@/types/database'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { updateJobStatus } from './actions'
+import { getAccessLevel } from '@/lib/access'
+import PrintButton from '@/components/PrintButton'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -15,11 +17,14 @@ const FILE_ICON: Record<string, string> = { image: '🖼️', video: '🎬', pdf
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const { data: raw } = await supabase
-    .from('jobs')
-    .select('*, job_assignments(*, team_members(*)), job_documents(*)')
-    .eq('id', id)
-    .single()
+  const [{ data: raw }, accessLevel] = await Promise.all([
+    supabase
+      .from('jobs')
+      .select('*, job_assignments(*, team_members(*)), job_documents(*)')
+      .eq('id', id)
+      .single(),
+    getAccessLevel(),
+  ])
 
   if (!raw) notFound()
 
@@ -49,28 +54,30 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </span>
         </div>
 
-        {/* เปลี่ยนสถานะ */}
-        <div className="border-t border-gray-50 pt-4">
-          <p className="text-xs text-gray-400 font-medium mb-2">เปลี่ยนสถานะ</p>
-          <div className="flex gap-2 flex-wrap">
-            {(['pending', 'in_progress', 'done'] as const).map(s => {
-              const active = job.status === s
-              const colors: Record<string, string> = {
-                pending:     active ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-400' : 'bg-gray-50 text-gray-500 hover:bg-gray-100',
-                in_progress: active ? 'bg-amber-200 text-amber-800 ring-2 ring-amber-400' : 'bg-amber-50 text-amber-600 hover:bg-amber-100',
-                done:        active ? 'bg-green-200 text-green-800 ring-2 ring-green-500' : 'bg-green-50 text-green-600 hover:bg-green-100',
-              }
-              return (
-                <form key={s} action={updateJobStatus.bind(null, id, s)}>
-                  <button type="submit" disabled={active}
-                    className={`text-sm px-4 py-1.5 rounded-full font-medium transition-all disabled:cursor-default ${colors[s]}`}>
-                    {active && '✓ '}{STATUS_LABEL[s]}
-                  </button>
-                </form>
-              )
-            })}
+        {/* เปลี่ยนสถานะ — เฉพาะ admin และ staff */}
+        {(accessLevel === 'admin' || accessLevel === 'staff') && (
+          <div className="border-t border-gray-50 pt-4">
+            <p className="text-xs text-gray-400 font-medium mb-2">เปลี่ยนสถานะ</p>
+            <div className="flex gap-2 flex-wrap">
+              {(['pending', 'in_progress', 'done'] as const).map(s => {
+                const active = job.status === s
+                const colors: Record<string, string> = {
+                  pending:     active ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-400' : 'bg-gray-50 text-gray-500 hover:bg-gray-100',
+                  in_progress: active ? 'bg-amber-200 text-amber-800 ring-2 ring-amber-400' : 'bg-amber-50 text-amber-600 hover:bg-amber-100',
+                  done:        active ? 'bg-green-200 text-green-800 ring-2 ring-green-500' : 'bg-green-50 text-green-600 hover:bg-green-100',
+                }
+                return (
+                  <form key={s} action={updateJobStatus.bind(null, id, s)}>
+                    <button type="submit" disabled={active}
+                      className={`text-sm px-4 py-1.5 rounded-full font-medium transition-all disabled:cursor-default ${colors[s]}`}>
+                      {active && '✓ '}{STATUS_LABEL[s]}
+                    </button>
+                  </form>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {job.description && (
           <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-50 leading-relaxed">{job.description}</p>
@@ -160,13 +167,16 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       )}
 
       {/* Actions */}
-      <div className="flex gap-3 pb-6">
-        <Link href={`/jobs/${id}/edit`}
-          className="flex-1 text-center border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm py-2.5 rounded-xl transition-colors font-medium">
-          ✏️ แก้ไขงาน
-        </Link>
+      <div className="flex flex-wrap gap-3 pb-6">
+        {(accessLevel === 'admin' || accessLevel === 'staff') && (
+          <Link href={`/jobs/${id}/edit`}
+            className="flex-1 text-center border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[120px]">
+            ✏️ แก้ไขงาน
+          </Link>
+        )}
+        <PrintButton />
         <Link href="/jobs"
-          className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium">
+          className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[100px]">
           กลับรายการ
         </Link>
       </div>
@@ -182,3 +192,4 @@ function Row({ label, value }: { label: string; value: string }) {
     </div>
   )
 }
+

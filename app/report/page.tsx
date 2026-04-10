@@ -1,7 +1,12 @@
 import { supabase } from '@/lib/supabase'
 import type { Job } from '@/types/database'
+import { getAccessLevel } from '@/lib/access'
+import { redirect } from 'next/navigation'
 
 export default async function ReportPage() {
+  const level = await getAccessLevel()
+  if (level !== 'admin') redirect('/')
+
   const year = new Date().getFullYear()
   const { data: raw } = await supabase
     .from('jobs')

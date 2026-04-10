@@ -74,6 +74,13 @@ export async function addUser(formData: FormData) {
   revalidatePath('/admin/users')
 }
 
+export async function updateAccessLevel(memberId: string, formData: FormData) {
+  const access_level = formData.get('access_level') as string
+  const supabase = await createClient()
+  await supabase.from('team_members').update({ access_level } as any).eq('id', memberId)
+  revalidatePath('/admin/users')
+}
+
 export async function resetPassword(email: string) {
   const supabase = await createClient()
   await supabase.auth.resetPasswordForEmail(email, {

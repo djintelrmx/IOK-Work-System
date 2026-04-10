@@ -1,6 +1,12 @@
 import { createClient } from '@/lib/supabase-server'
-import { approveUser, rejectUser, activateUser, deleteUser, updateRole, updateName, addUser, resetPassword } from './actions'
+import { approveUser, rejectUser, activateUser, deleteUser, updateRole, updateName, addUser, resetPassword, updateAccessLevel } from './actions'
 import RoleSelect from '@/components/RoleSelect'
+
+const ACCESS_LEVEL_LABEL: Record<string, string> = {
+  admin: '👑 ผู้ดูแลระบบ (Admin)',
+  staff: '🎓 อาจารย์ / เจ้าหน้าที่',
+  viewer: '👁 ทีมงานทั่วไป',
+}
 
 const STATUS_STYLE: Record<string, string> = {
   pending:  'bg-amber-100 text-amber-700',
@@ -146,14 +152,27 @@ export default async function AdminUsersPage() {
                 </span>
               </div>
 
-              {/* แถวกลาง: บทบาท */}
-              <form action={updateRole.bind(null, m.id)} className="flex items-start gap-2 mb-3">
-                <label className="text-xs text-gray-400 flex-shrink-0 mt-2">บทบาท:</label>
-                <div className="flex-1 max-w-[220px]">
-                  <RoleSelect name="role" defaultValue={m.role} />
-                </div>
-                <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500 mt-2 flex-shrink-0">บันทึก</button>
-              </form>
+              {/* แถวกลาง: บทบาทในทีม + ระดับสิทธิ์ */}
+              <div className="flex flex-wrap gap-4 mb-3">
+                <form action={updateRole.bind(null, m.id)} className="flex items-start gap-2">
+                  <label className="text-xs text-gray-400 flex-shrink-0 mt-2">บทบาทในทีม:</label>
+                  <div className="min-w-[180px]">
+                    <RoleSelect name="role" defaultValue={m.role} />
+                  </div>
+                  <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500 mt-2 flex-shrink-0">บันทึก</button>
+                </form>
+
+                <form action={updateAccessLevel.bind(null, m.id)} className="flex items-center gap-2">
+                  <label className="text-xs text-gray-400 flex-shrink-0">ระดับสิทธิ์:</label>
+                  <select name="access_level" defaultValue={(m as any).access_level ?? 'staff'}
+                    className="text-xs border border-gray-200 rounded-md px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300">
+                    <option value="admin">👑 Admin</option>
+                    <option value="staff">🎓 อาจารย์ / เจ้าหน้าที่</option>
+                    <option value="viewer">👁 ทีมงานทั่วไป</option>
+                  </select>
+                  <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500">บันทึก</button>
+                </form>
+              </div>
 
               {/* แถวล่าง: Action buttons */}
               <div className="flex flex-wrap gap-2">

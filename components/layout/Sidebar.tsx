@@ -27,9 +27,10 @@ interface SidebarProps {
   userName?: string
   userEmail?: string
   onClose?: () => void
+  accessLevel?: 'admin' | 'staff' | 'viewer'
 }
 
-export default function Sidebar({ userName, userEmail, onClose }: SidebarProps) {
+export default function Sidebar({ userName, userEmail, onClose, accessLevel = 'staff' }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -67,18 +68,41 @@ export default function Sidebar({ userName, userEmail, onClose }: SidebarProps) 
           )
         })}
 
-        <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">ผู้ดูแล</p>
-        {navAdmin.map(({ label, href, icon: Icon }) => {
-          const active = pathname.startsWith(href)
-          return (
-            <Link key={href} href={href} onClick={onClose}
-              className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
-              <Icon size={16} className="flex-shrink-0" />
-              {label}
-            </Link>
-          )
-        })}
+        {/* การเงิน — เฉพาะ admin */}
+        {accessLevel === 'admin' && (
+          <>
+            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
+            {navFinance.map(({ label, href, icon: Icon }) => {
+              const active = pathname.startsWith(href)
+              return (
+                <Link key={href} href={href} onClick={onClose}
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                    active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
+                  <Icon size={16} className="flex-shrink-0" />
+                  {label}
+                </Link>
+              )
+            })}
+          </>
+        )}
+
+        {/* ผู้ดูแล — เฉพาะ admin */}
+        {accessLevel === 'admin' && (
+          <>
+            <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">ผู้ดูแล</p>
+            {navAdmin.map(({ label, href, icon: Icon }) => {
+              const active = pathname.startsWith(href)
+              return (
+                <Link key={href} href={href} onClick={onClose}
+                  className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+                    active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
+                  <Icon size={16} className="flex-shrink-0" />
+                  {label}
+                </Link>
+              )
+            })}
+          </>
+        )}
       </nav>
 
       {/* User + Logout */}

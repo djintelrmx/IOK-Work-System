@@ -8,16 +8,17 @@ interface AppShellProps {
   children: React.ReactNode
   userName?: string
   userEmail?: string
+  accessLevel?: 'admin' | 'staff' | 'viewer'
 }
 
-export default function AppShell({ children, userName, userEmail }: AppShellProps) {
+export default function AppShell({ children, userName, userEmail, accessLevel = 'staff' }: AppShellProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Desktop sidebar — hidden on mobile */}
       <div className="hidden md:flex">
-        <Sidebar userName={userName} userEmail={userEmail} />
+        <Sidebar userName={userName} userEmail={userEmail} accessLevel={accessLevel} />
       </div>
 
       {/* Mobile sidebar overlay */}
@@ -31,6 +32,7 @@ export default function AppShell({ children, userName, userEmail }: AppShellProp
             <Sidebar
               userName={userName}
               userEmail={userEmail}
+              accessLevel={accessLevel}
               onClose={() => setOpen(false)}
             />
           </div>
