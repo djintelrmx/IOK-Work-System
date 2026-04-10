@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import type { Job, TeamMember, JobDocument } from '@/types/database'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { updateJobStatus } from './actions'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -38,7 +39,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
       {/* Header */}
       <div className="bg-white rounded-xl border border-gray-100 p-5">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
           <div className="flex-1">
             <h1 className="text-xl font-bold text-gray-800">{job.title}</h1>
             <p className="text-sm text-gray-400 mt-0.5">{job.job_type}</p>
@@ -48,8 +49,31 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </span>
         </div>
 
+        {/* เปลี่ยนสถานะ */}
+        <div className="border-t border-gray-50 pt-4">
+          <p className="text-xs text-gray-400 font-medium mb-2">เปลี่ยนสถานะ</p>
+          <div className="flex gap-2 flex-wrap">
+            {(['pending', 'in_progress', 'done'] as const).map(s => {
+              const active = job.status === s
+              const colors: Record<string, string> = {
+                pending:     active ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-400' : 'bg-gray-50 text-gray-500 hover:bg-gray-100',
+                in_progress: active ? 'bg-amber-200 text-amber-800 ring-2 ring-amber-400' : 'bg-amber-50 text-amber-600 hover:bg-amber-100',
+                done:        active ? 'bg-green-200 text-green-800 ring-2 ring-green-500' : 'bg-green-50 text-green-600 hover:bg-green-100',
+              }
+              return (
+                <form key={s} action={updateJobStatus.bind(null, id, s)}>
+                  <button type="submit" disabled={active}
+                    className={`text-sm px-4 py-1.5 rounded-full font-medium transition-all disabled:cursor-default ${colors[s]}`}>
+                    {active && '✓ '}{STATUS_LABEL[s]}
+                  </button>
+                </form>
+              )
+            })}
+          </div>
+        </div>
+
         {job.description && (
-          <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
+          <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-50 leading-relaxed">{job.description}</p>
         )}
       </div>
 
