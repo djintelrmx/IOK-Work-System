@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { approveUser, rejectUser, activateUser, deleteUser, updateRole, updateName, addUser, resetPassword } from './actions'
+import RoleSelect from '@/components/RoleSelect'
 
 const STATUS_STYLE: Record<string, string> = {
   pending:  'bg-amber-100 text-amber-700',
@@ -10,7 +11,6 @@ const STATUS_LABEL: Record<string, string> = {
   pending: 'รออนุมัติ', active: 'ใช้งานได้', inactive: 'ถูกระงับ',
 }
 
-const ROLES = ['ช่างกล้อง','ดูแลเสียง','ไลฟ์สตรีม','ระบบแสง','ตัดต่อวิดีโอ','ผู้ประสานงาน','ผู้ดูแลระบบ','อื่นๆ']
 
 export default async function AdminUsersPage() {
   const supabase = await createClient()
@@ -68,13 +68,9 @@ export default async function AdminUsersPage() {
             <input name="email" type="email" required placeholder="email@example.com"
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
           </div>
-          <div className="min-w-[160px]">
+          <div className="min-w-[200px]">
             <label className="text-xs font-semibold text-gray-500 block mb-1">บทบาท</label>
-            <select name="role"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
-              <option value="">— ไม่ระบุ —</option>
-              {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
+            <RoleSelect name="role" />
           </div>
           <button type="submit"
             className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-5 py-2 rounded-lg transition-colors font-medium whitespace-nowrap">
@@ -101,14 +97,12 @@ export default async function AdminUsersPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 items-center">
-                  <form action={approveUser.bind(null, m.id)} className="flex flex-wrap gap-2 items-center flex-1">
-                    <select name="role"
-                      className="flex-1 min-w-[160px] border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
-                      <option value="">— กำหนดบทบาท —</option>
-                      {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
+                  <form action={approveUser.bind(null, m.id)} className="flex flex-wrap gap-2 items-start flex-1">
+                    <div className="flex-1 min-w-[160px]">
+                      <RoleSelect name="role" />
+                    </div>
                     <button type="submit"
-                      className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium">
+                      className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium mt-0.5">
                       ✓ อนุมัติ
                     </button>
                   </form>
@@ -153,14 +147,12 @@ export default async function AdminUsersPage() {
               </div>
 
               {/* แถวกลาง: บทบาท */}
-              <form action={updateRole.bind(null, m.id)} className="flex items-center gap-2 mb-3">
-                <label className="text-xs text-gray-400 flex-shrink-0">บทบาท:</label>
-                <select name="role" defaultValue={m.role ?? ''}
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300 flex-1 max-w-[200px]">
-                  <option value="">— ไม่ระบุ —</option>
-                  {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-                </select>
-                <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500">บันทึก</button>
+              <form action={updateRole.bind(null, m.id)} className="flex items-start gap-2 mb-3">
+                <label className="text-xs text-gray-400 flex-shrink-0 mt-2">บทบาท:</label>
+                <div className="flex-1 max-w-[220px]">
+                  <RoleSelect name="role" defaultValue={m.role} />
+                </div>
+                <button type="submit" className="text-xs text-gray-400 hover:text-indigo-500 mt-2 flex-shrink-0">บันทึก</button>
               </form>
 
               {/* แถวล่าง: Action buttons */}
