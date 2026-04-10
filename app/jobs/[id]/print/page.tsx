@@ -58,8 +58,8 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
         * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
         body { background: white !important; color: #1e293b; font-size: 14px; line-height: 1.6; }
         .print-page { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm 20mm 15mm; }
-        .p-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #3730a3; padding-bottom: 12px; margin-bottom: 20px; }
-        .p-logo-box { display: flex; align-items: center; gap: 12px; }
+        .p-header { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 2px solid #3730a3; padding-bottom: 12px; margin-bottom: 20px; gap: 16px; }
+        .p-logo-box { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
         .p-logo { width: 60px; height: 60px; object-fit: contain; }
         .p-org strong { font-size: 14px; color: #1e293b; display: block; }
         .p-org span { font-size: 11px; color: #64748b; }
@@ -107,18 +107,16 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
               <span>โทร. 02-320-2777 | โทรสาร. 02-321-4444</span>
             </div>
           </div>
-          <div className="p-doc-box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ textAlign: 'right' }}>
-                <div className="p-doc-title">ใบสั่งงาน</div>
-                <div className="p-doc-ref">เลขที่ {jobRef}</div>
-                <div className="p-doc-ref">วันที่พิมพ์ {fmtDate(new Date().toISOString().split('T')[0])}</div>
-              </div>
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(jobUrl)}`}
-                alt="QR Code" style={{ width: '80px', height: '80px', border: '1px solid #e2e8f0', borderRadius: '4px' }}
-              />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
+            <div className="p-doc-box">
+              <div className="p-doc-title">ใบสั่งงาน</div>
+              <div className="p-doc-ref">เลขที่ {jobRef}</div>
+              <div className="p-doc-ref">วันที่พิมพ์ {fmtDate(new Date().toISOString().split('T')[0])}</div>
             </div>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(jobUrl)}`}
+              alt="QR Code" style={{ width: '80px', height: '80px', flexShrink: 0 }}
+            />
           </div>
         </div>
 
