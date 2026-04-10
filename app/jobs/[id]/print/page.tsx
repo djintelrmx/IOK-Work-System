@@ -107,10 +107,18 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
               <span>โทร. 02-320-2777 | โทรสาร. 02-321-4444</span>
             </div>
           </div>
-          <div className="p-doc-box">
-            <div className="p-doc-title">ใบสั่งงาน</div>
-            <div className="p-doc-ref">เลขที่ {jobRef}</div>
-            <div className="p-doc-ref">วันที่พิมพ์ {fmtDate(new Date().toISOString().split('T')[0])}</div>
+          <div className="p-doc-box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ textAlign: 'right' }}>
+                <div className="p-doc-title">ใบสั่งงาน</div>
+                <div className="p-doc-ref">เลขที่ {jobRef}</div>
+                <div className="p-doc-ref">วันที่พิมพ์ {fmtDate(new Date().toISOString().split('T')[0])}</div>
+              </div>
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(jobUrl)}`}
+                alt="QR Code" style={{ width: '80px', height: '80px', border: '1px solid #e2e8f0', borderRadius: '4px' }}
+              />
+            </div>
           </div>
         </div>
 
@@ -175,15 +183,9 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
           ))}
         </div>
 
-        <div className="p-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div className="p-footer">
           <span>IOK Work System — มหาวิทยาลัยเกษมบัณฑิต</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(jobUrl)}`}
-              alt="QR" style={{ width: '64px', height: '64px' }}
-            />
-            <span>{jobRef}</span>
-          </div>
+          <span>พิมพ์เมื่อ {new Date().toLocaleDateString('th-TH')}</span>
         </div>
       </div>
     </>
