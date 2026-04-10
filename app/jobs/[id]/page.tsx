@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { updateJobStatus } from './actions'
 import { getAccessLevel } from '@/lib/access'
 import JobDocsUploader from '@/components/JobDocsUploader'
+import PaymentStatusForm from '@/components/PaymentStatusForm'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -147,6 +148,16 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             ))}
           </div>
         </div>
+      )}
+
+      {/* สถานะการชำระเงิน */}
+      {(accessLevel === 'admin' || accessLevel === 'staff') && (
+        <PaymentStatusForm
+          jobId={id}
+          initialStatus={(job as any).payment_status ?? 'unpaid'}
+          initialDate={(job as any).payment_date}
+          initialNote={(job as any).payment_note}
+        />
       )}
 
       {/* เอกสาร / หลักฐาน */}

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import Sidebar from './Sidebar'
+import NotificationBell from '@/components/NotificationBell'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -46,7 +47,7 @@ export default function AppShell({ children, userName, userEmail, accessLevel = 
           <button onClick={() => setOpen(true)} className="p-1 -ml-1" aria-label="เปิดเมนู">
             <Menu size={22} />
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5">
               <Image src="https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg" alt="IOK Logo" width={28} height={28} className="object-contain" />
             </div>
@@ -55,7 +56,13 @@ export default function AppShell({ children, userName, userEmail, accessLevel = 
               <p className="text-indigo-300 text-xs leading-tight">Institute of KBU Creative Media</p>
             </div>
           </div>
+          <NotificationBell userEmail={userEmail ?? ''} />
         </header>
+
+        {/* Desktop top bar — notification bell only */}
+        <div className="hidden md:flex items-center justify-end px-4 py-2 bg-indigo-900/10 border-b border-gray-100 flex-shrink-0">
+          <NotificationBell userEmail={userEmail ?? ''} />
+        </div>
 
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>

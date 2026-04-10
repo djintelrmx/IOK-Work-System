@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import type { Job, TeamMember } from '@/types/database'
 import { notFound } from 'next/navigation'
 import PrintControls from '@/components/PrintControls'
+import { headers } from 'next/headers'
 
 const ORDER_LABEL: Record<string, string> = {
   letter: 'ผ่านหนังสือราชการ',
@@ -33,6 +34,11 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
     .single()
 
   if (!raw) notFound()
+
+  const headersList = await headers()
+  const host = headersList.get('host') ?? 'localhost:3000'
+  const proto = host.includes('localhost') ? 'http' : 'https'
+  const jobUrl = `${proto}://${host}/jobs/${id}`
 
   const job = raw as Job & {
     job_assignments: { role_in_job: string | null; team_members: Pick<TeamMember, 'name' | 'role'> }[]
@@ -169,9 +175,15 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
           ))}
         </div>
 
-        <div className="p-footer">
+        <div className="p-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
           <span>IOK Work System — มหาวิทยาลัยเกษมบัณฑิต</span>
-          <span>เลขอ้างอิง: {jobRef}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(jobUrl)}`}
+              alt="QR" style={{ width: '64px', height: '64px' }}
+            />
+            <span>{jobRef}</span>
+          </div>
         </div>
       </div>
     </>

@@ -10,6 +10,12 @@ const STATUS_COLOR: Record<string, string> = {
   in_progress: 'bg-amber-100 text-amber-700',
   done: 'bg-green-100 text-green-700',
 }
+const PAYMENT_LABEL: Record<string, string> = { unpaid: 'ยังไม่ชำระ', partial: 'ชำระบางส่วน', paid: 'ชำระแล้ว' }
+const PAYMENT_COLOR: Record<string, string> = {
+  unpaid: 'bg-red-100 text-red-600',
+  partial: 'bg-yellow-100 text-yellow-700',
+  paid: 'bg-green-100 text-green-700',
+}
 
 export default async function BillingPage() {
   const level = await getAccessLevel()
@@ -17,12 +23,13 @@ export default async function BillingPage() {
 
   const { data: raw } = await supabase
     .from('jobs')
-    .select('id, job_number, title, job_date, client_org, source, income, expense, status')
+    .select('id, job_number, title, job_date, client_org, source, income, expense, status, payment_status')
     .order('job_date', { ascending: false })
 
   const jobs = (raw ?? []) as (Pick<Job, 'id' | 'job_number' | 'title' | 'job_date' | 'client_org' | 'source' | 'income' | 'expense' | 'status'>)[]
   const fmt = (n: number) => n.toLocaleString('th-TH')
   const totalIncome = jobs.reduce((s, j) => s + (j.income ?? 0), 0)
+  const totalUnpaid = jobs.filter(j => (j as any).payment_status !== 'paid').reduce((s, j) => s + (j.income ?? 0), 0)
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
 
   return (
@@ -44,9 +51,9 @@ export default async function BillingPage() {
           <p className="text-2xl font-bold text-green-600">{fmt(totalIncome)}</p>
           <p className="text-xs text-green-500 mt-1">รายได้รวม (บาท)</p>
         </div>
-        <div className="col-span-2 md:col-span-1 bg-amber-50 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-amber-600">{jobs.filter(j => j.status !== 'done').length}</p>
-          <p className="text-xs text-amber-500 mt-1">งานรอดำเนินการ</p>
+        <div className="col-span-2 md:col-span-1 bg-red-50 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-red-600">{fmt(totalUnpaid)}</p>
+          <p className="text-xs text-red-500 mt-1">ยอดค้างชำระ (บาท)</p>
         </div>
       </div>
 
@@ -84,9 +91,14 @@ export default async function BillingPage() {
                     <td className="px-4 py-3 text-gray-500 text-xs">{fmtDate(job.job_date)}</td>
                     <td className="px-4 py-3 text-right font-medium text-green-600">{fmt(job.income ?? 0)}</td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[job.status]}`}>
-                        {STATUS_LABEL[job.status]}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit ${STATUS_COLOR[job.status]}`}>
+                          {STATUS_LABEL[job.status]}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit ${PAYMENT_COLOR[(job as any).payment_status ?? 'unpaid']}`}>
+                          {PAYMENT_LABEL[(job as any).payment_status ?? 'unpaid']}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2 flex-wrap">

@@ -2,6 +2,7 @@ export type JobType = 'ไลฟ์สตรีม' | 'ถ่ายทอดส�
 export type JobSource = 'ภายในมหาวิทยาลัย' | 'ภายนอกมหาวิทยาลัย'
 export type OrderType = 'letter' | 'direct' | 'other'
 export type JobStatus = 'pending' | 'in_progress' | 'done'
+export type PaymentStatus = 'unpaid' | 'partial' | 'paid'
 
 export interface TeamMember {
   id: string
@@ -22,6 +23,7 @@ export interface Job {
   job_number: string | null
   title: string
   job_type: JobType
+  job_type_custom: string | null
   source: JobSource
   client_org: string
   location: string | null
@@ -38,6 +40,9 @@ export interface Job {
   income: number
   expense: number
   status: JobStatus
+  payment_status: PaymentStatus
+  payment_date: string | null
+  payment_note: string | null
   created_at: string
   updated_at: string
 }
@@ -47,6 +52,7 @@ export interface JobAssignment {
   job_id: string
   member_id: string
   role_in_job: string | null
+  compensation: number
   created_at: string
   team_members?: TeamMember
 }
@@ -57,12 +63,36 @@ export interface JobDocument {
   file_name: string
   file_url: string
   file_type: string | null
+  category: string | null
   created_at: string
 }
 
 export interface JobWithDetails extends Job {
   job_assignments: (JobAssignment & { team_members: TeamMember })[]
   job_documents: JobDocument[]
+}
+
+export interface Client {
+  id: string
+  name: string
+  org_type: string | null
+  contact_person: string | null
+  phone: string | null
+  email: string | null
+  address: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface Notification {
+  id: string
+  member_id: string | null
+  type: string
+  title: string
+  body: string | null
+  job_id: string | null
+  is_read: boolean
+  created_at: string
 }
 
 export type QuotationStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'cancelled'
@@ -117,6 +147,8 @@ export interface Database {
       jobs: { Row: Job; Insert: Omit<Job, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Job> }
       job_assignments: { Row: JobAssignment; Insert: Omit<JobAssignment, 'id' | 'created_at'>; Update: Partial<JobAssignment> }
       job_documents: { Row: JobDocument; Insert: Omit<JobDocument, 'id' | 'created_at'>; Update: Partial<JobDocument> }
+      clients: { Row: Client; Insert: Omit<Client, 'id' | 'created_at'>; Update: Partial<Client> }
+      notifications: { Row: Notification; Insert: Omit<Notification, 'id' | 'created_at'>; Update: Partial<Notification> }
     }
   }
 }

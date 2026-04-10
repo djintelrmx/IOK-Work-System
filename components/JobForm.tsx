@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import type { TeamMember } from '@/types/database'
 import { supabase } from '@/lib/supabase'
 
-const JOB_TYPES = ['ไลฟ์สตรีม', 'ถ่ายทอดสดภายใน', 'ถ่าย­ภาพนิ่ง', 'ผลิตวิดีโอ', 'ระบบเสียง', 'ระบบแสง / สี', 'สื่อมัลติมีเดีย', 'อื่นๆ']
+const JOB_TYPES = ['ไลฟ์สตรีม', 'ถ่ายทอดสดภายใน', 'ถ่ายภาพนิ่ง', 'ผลิตวิดีโอ', 'ระบบเสียง', 'ระบบแสง / สี', 'สื่อมัลติมีเดีย', 'อื่นๆ']
 const ROLES = ['ช่างกล้อง', 'ดูแลเสียง', 'ไลฟ์สตรีม', 'ระบบแสง', 'ประสานงาน', 'ตัดต่อ', 'กราฟิก', 'อื่นๆ']
 
 type OrderType = 'letter' | 'direct' | 'other'
@@ -33,6 +33,8 @@ export default function JobForm({ members }: { members: TeamMember[] }) {
   const [saving, setSaving] = useState(false)
   const [orderType, setOrderType] = useState<OrderType>('letter')
   const [assignments, setAssignments] = useState<Record<string, string>>({})
+  const [jobTypeCustom, setJobTypeCustom] = useState('')
+  const [jobType, setJobType] = useState('')
 
   // File upload state
   const [fileCategory, setFileCategory] = useState('photo')
@@ -103,6 +105,7 @@ export default function JobForm({ members }: { members: TeamMember[] }) {
     const jobData = {
       title: fd.get('title') as string,
       job_type: fd.get('job_type') as string,
+      job_type_custom: fd.get('job_type') === 'อื่นๆ' ? jobTypeCustom : null,
       source: fd.get('source') as string,
       client_org: fd.get('client_org') as string,
       location: fd.get('location') as string || null,
@@ -158,10 +161,16 @@ export default function JobForm({ members }: { members: TeamMember[] }) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>ประเภทงาน <Required /></label>
-            <select name="job_type" required className={inputCls}>
+            <select name="job_type" required className={inputCls}
+              value={jobType}
+              onChange={e => { setJobType(e.target.value); if (e.target.value !== 'อื่นๆ') setJobTypeCustom('') }}>
               <option value="">-- เลือกประเภท --</option>
               {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
+            {jobType === 'อื่นๆ' && (
+              <input value={jobTypeCustom} onChange={e => setJobTypeCustom(e.target.value)}
+                className={inputCls + ' mt-2'} placeholder="ระบุประเภทงาน เช่น บันทึกเทป, ถ่ายทำโฆษณา..." />
+            )}
           </div>
           <div>
             <label className={labelCls}>แหล่งที่มาของงาน <Required /></label>
