@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, FileText, CalendarDays, Users,
-  Images, Coins, FileBarChart2, LogOut, Receipt, UserCircle
+  Images, Coins, FileBarChart2, LogOut, Receipt, ClipboardList
 } from 'lucide-react'
 import { clsx } from 'clsx'
 
@@ -20,6 +20,7 @@ const navFinance = [
   { label: 'รายงานประจำปี', href: '/report', icon: FileBarChart2 },
 ]
 const navBilling = [
+  { label: 'ใบเสนอราคา', href: '/quotations', icon: ClipboardList },
   { label: 'ออกบิล', href: '/billing', icon: Receipt },
 ]
 const navAdmin = [

@@ -54,6 +54,9 @@ export default async function JobsPage() {
                 {all.map(job => (
                   <tr key={job.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
+                      {(job as any).job_number && (
+                        <p className="text-xs font-mono font-semibold text-indigo-500 mb-0.5">{(job as any).job_number}</p>
+                      )}
                       <p className="font-medium text-gray-800">{job.title}</p>
                       <p className="text-xs text-gray-400">{job.job_type}</p>
                     </td>

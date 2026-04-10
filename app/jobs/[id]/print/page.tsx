@@ -38,7 +38,7 @@ export default async function PrintJobPage({ params }: { params: Promise<{ id: s
     job_assignments: { role_in_job: string | null; team_members: Pick<TeamMember, 'name' | 'role'> }[]
   }
 
-  const jobRef = `IOK-${id.slice(0, 8).toUpperCase()}`
+  const jobRef = job.job_number ?? `IOK-${id.slice(0, 8).toUpperCase()}`
   const profit = (job.income ?? 0) - (job.expense ?? 0)
   const fmt = (n: number) => n.toLocaleString('th-TH')
 

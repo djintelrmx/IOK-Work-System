@@ -46,6 +46,9 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       <div className="bg-white rounded-xl border border-gray-100 p-5">
         <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
           <div className="flex-1">
+            {job.job_number && (
+              <p className="text-xs font-mono font-semibold text-indigo-600 mb-1">{job.job_number}</p>
+            )}
             <h1 className="text-xl font-bold text-gray-800">{job.title}</h1>
             <p className="text-sm text-gray-400 mt-0.5">{job.job_type}</p>
           </div>
