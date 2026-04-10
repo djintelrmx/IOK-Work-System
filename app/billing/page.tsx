@@ -17,10 +17,10 @@ export default async function BillingPage() {
 
   const { data: raw } = await supabase
     .from('jobs')
-    .select('id, title, job_date, client_org, source, income, expense, status')
+    .select('id, job_number, title, job_date, client_org, source, income, expense, status')
     .order('job_date', { ascending: false })
 
-  const jobs = (raw ?? []) as Pick<Job, 'id' | 'title' | 'job_date' | 'client_org' | 'source' | 'income' | 'expense' | 'status'>[]
+  const jobs = (raw ?? []) as (Pick<Job, 'id' | 'job_number' | 'title' | 'job_date' | 'client_org' | 'source' | 'income' | 'expense' | 'status'>)[]
   const fmt = (n: number) => n.toLocaleString('th-TH')
   const totalIncome = jobs.reduce((s, j) => s + (j.income ?? 0), 0)
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -30,7 +30,7 @@ export default async function BillingPage() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-xl font-bold text-gray-800">ระบบออกบิล</h1>
-          <p className="text-sm text-gray-400">จัดการใบแจ้งหนี้และใบเสร็จ</p>
+          <p className="text-sm text-gray-400">จัดการใบแจ้งหนี้และใบเสร็จรับเงิน</p>
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export default async function BillingPage() {
         </div>
       </div>
 
-      {/* Job list with invoice buttons */}
+      {/* Job list */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-50">
           <h2 className="font-semibold text-gray-700">รายการงาน</h2>
@@ -59,7 +59,7 @@ export default async function BillingPage() {
           <p className="text-sm text-gray-400 text-center py-12">ยังไม่มีข้อมูลงาน</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[600px]">
+            <table className="w-full text-sm min-w-[680px]">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">#</th>
@@ -67,7 +67,7 @@ export default async function BillingPage() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">วันที่</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">ยอดเงิน</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">สถานะ</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500">บิล</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500">จัดการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -75,6 +75,9 @@ export default async function BillingPage() {
                   <tr key={job.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-gray-400 text-xs">{i + 1}</td>
                     <td className="px-4 py-3">
+                      {job.job_number && (
+                        <p className="text-xs font-mono font-semibold text-indigo-500 mb-0.5">{job.job_number}</p>
+                      )}
                       <p className="font-medium text-gray-800">{job.title}</p>
                       <p className="text-xs text-gray-400">{job.client_org}</p>
                     </td>
@@ -85,11 +88,17 @@ export default async function BillingPage() {
                         {STATUS_LABEL[job.status]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      <Link href={`/billing/${job.id}`} target="_blank"
-                        className="text-xs px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg font-medium transition-colors">
-                        🧾 ออกบิล
-                      </Link>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-2 flex-wrap">
+                        <Link href={`/jobs/${job.id}`}
+                          className="text-xs px-2.5 py-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg font-medium transition-colors whitespace-nowrap">
+                          📋 ดูใบงาน
+                        </Link>
+                        <Link href={`/billing/${job.id}`} target="_blank"
+                          className="text-xs px-2.5 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg font-medium transition-colors whitespace-nowrap">
+                          🖨️ พิมพ์บิล
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -25,16 +25,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { data: { user } } = await supabase.auth.getUser()
 
   let memberName: string | undefined
-  let accessLevel: 'admin' | 'staff' | 'viewer' = 'staff'
   if (user?.email) {
     const { data } = await supabase
       .from('team_members')
-      .select('name, access_level')
+      .select('name')
       .eq('email', user.email)
       .single()
     memberName = data?.name
-    accessLevel = (data?.access_level as typeof accessLevel) ?? 'staff'
   }
+  // ใช้ getAccessLevel() เพื่อให้สอดคล้องกับ TEST MODE
+  const accessLevel = await getAccessLevel()
 
   return (
     <html lang="th">
