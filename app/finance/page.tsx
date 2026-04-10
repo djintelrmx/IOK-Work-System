@@ -15,14 +15,14 @@ export default async function FinancePage() {
   const totalProfit = totalIncome - totalExpense
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
       <div>
         <h1 className="text-xl font-bold text-gray-800">รายได้ - รายจ่าย</h1>
         <p className="text-sm text-gray-400">สรุปการเงินทั้งหมด</p>
       </div>
 
       {/* สรุป */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl p-5">
           <p className="text-green-100 text-sm mb-1">รายได้รวม</p>
           <p className="text-3xl font-bold">{fmt(totalIncome)}</p>
@@ -44,10 +44,11 @@ export default async function FinancePage() {
 
       {/* รายละเอียด */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
         {jobs.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-12">ยังไม่มีข้อมูลงาน</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[560px]">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">งาน</th>
@@ -87,6 +88,7 @@ export default async function FinancePage() {
             </tbody>
           </table>
         )}
+        </div>
       </div>
     </div>
   )

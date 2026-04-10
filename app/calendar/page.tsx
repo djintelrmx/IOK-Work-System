@@ -42,19 +42,19 @@ export default async function CalendarPage() {
   }
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-800">ปฏิทินงาน</h1>
           <p className="text-sm text-gray-400">{monthNames[month]} {year + 543}</p>
         </div>
         <Link href="/jobs/new"
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
           + บันทึกรับงาน
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 p-5">
+      <div className="bg-white rounded-xl border border-gray-100 p-3 md:p-5">
         <div className="grid grid-cols-7 mb-2">
           {['อา','จ','อ','พ','พฤ','ศ','ส'].map(d => (
             <div key={d} className="text-center text-xs font-semibold text-gray-400 py-2">{d}</div>
@@ -62,23 +62,26 @@ export default async function CalendarPage() {
         </div>
         <div className="grid grid-cols-7 gap-1">
           {cells.map((day, i) => {
-            if (!day) return <div key={i} className="h-24 rounded-lg" />
+            if (!day) return <div key={i} className="h-16 md:h-24 rounded-lg" />
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
             const dayJobs = jobMap[dateStr] ?? []
             const isToday = dateStr === todayStr
             const isSun = i % 7 === 0
             return (
-              <div key={i} className={`h-24 p-1.5 rounded-lg text-xs border transition-colors ${isToday ? 'bg-indigo-50 border-indigo-200' : 'border-transparent hover:bg-gray-50'}`}>
-                <span className={`font-semibold ${isToday ? 'text-indigo-600' : isSun ? 'text-red-400' : 'text-gray-600'}`}>{day}</span>
-                <div className="mt-1 space-y-0.5">
-                  {dayJobs.slice(0, 2).map(j => (
+              <div key={i} className={`h-16 md:h-24 p-1 md:p-1.5 rounded-lg text-xs border transition-colors ${isToday ? 'bg-indigo-50 border-indigo-200' : 'border-transparent hover:bg-gray-50'}`}>
+                <span className={`font-semibold text-xs ${isToday ? 'text-indigo-600' : isSun ? 'text-red-400' : 'text-gray-600'}`}>{day}</span>
+                <div className="mt-0.5 space-y-0.5">
+                  {dayJobs.slice(0, 1).map(j => (
                     <Link key={j.id} href={`/jobs/${j.id}`}
-                      className={`block text-white rounded px-1 py-0.5 truncate text-xs ${STATUS_COLOR[j.status]}`}>
+                      className={`hidden md:block text-white rounded px-1 py-0.5 truncate text-xs ${STATUS_COLOR[j.status]}`}>
                       {j.title}
                     </Link>
                   ))}
-                  {dayJobs.length > 2 && (
-                    <p className="text-gray-400 text-xs">+{dayJobs.length - 2} งาน</p>
+                  {dayJobs.length > 0 && (
+                    <span className={`md:hidden block w-2 h-2 rounded-full mx-auto mt-1 ${STATUS_COLOR[dayJobs[0].status]}`} />
+                  )}
+                  {dayJobs.length > 1 && (
+                    <p className="hidden md:block text-gray-400 text-xs">+{dayJobs.length - 1} งาน</p>
                   )}
                 </div>
               </div>

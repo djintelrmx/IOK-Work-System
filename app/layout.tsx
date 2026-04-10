@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Sidebar from '@/components/layout/Sidebar'
+import AppShell from '@/components/layout/AppShell'
 import { createClient } from '@/lib/supabase-server'
 
 export const metadata: Metadata = {
@@ -23,19 +23,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     memberName = data?.name
   }
 
-  const isLoginPage = false // middleware จัดการ redirect แล้ว
-
   return (
     <html lang="th">
       <body>
         {user ? (
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar
-              userName={memberName ?? user.user_metadata?.full_name ?? user.email}
-              userEmail={user.email}
-            />
-            <main className="flex-1 overflow-y-auto">{children}</main>
-          </div>
+          <AppShell
+            userName={memberName ?? user.user_metadata?.full_name ?? user.email}
+            userEmail={user.email}
+          >
+            {children}
+          </AppShell>
         ) : (
           <main>{children}</main>
         )}

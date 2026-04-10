@@ -39,7 +39,7 @@ export default async function DashboardPage() {
   const fmt = (n: number) => n.toLocaleString('th-TH')
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -47,13 +47,13 @@ export default async function DashboardPage() {
           <p className="text-sm text-gray-400">ภาพรวมการทำงาน IOK</p>
         </div>
         <Link href="/jobs/new"
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
           + บันทึกรับงาน
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatCard icon={<FileText size={18} className="text-indigo-600" />} bg="bg-indigo-50"
           value={allJobs.length} label="งานทั้งหมด" sub="ปีนี้" />
         <StatCard icon={<Loader size={18} className="text-amber-500" />} bg="bg-amber-50"
@@ -64,9 +64,9 @@ export default async function DashboardPage() {
           value={upcoming} label="งานที่กำลังจะมา" sub="วันนี้เป็นต้นไป" />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* งานล่าสุด */}
-        <div className="col-span-2 bg-white rounded-xl border border-gray-100 p-5">
+        <div className="md:col-span-2 bg-white rounded-xl border border-gray-100 p-4 md:p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-700">งานล่าสุด</h2>
             <Link href="/jobs" className="text-indigo-600 text-xs hover:underline">ดูทั้งหมด →</Link>

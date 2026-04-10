@@ -22,7 +22,7 @@ export default async function AdminUsersPage() {
   const pending = all.filter(m => m.status === 'pending')
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
       <div>
         <h1 className="text-xl font-bold text-gray-800">จัดการผู้ใช้งาน</h1>
         <p className="text-sm text-gray-400">
@@ -37,7 +37,7 @@ export default async function AdminUsersPage() {
           <p className="text-sm font-semibold text-amber-700 mb-3">⏳ รออนุมัติ ({pending.length} คน)</p>
           <div className="space-y-2">
             {pending.map(m => (
-              <div key={m.id} className="bg-white rounded-lg border border-amber-100 p-3 flex items-center gap-4">
+              <div key={m.id} className="bg-white rounded-lg border border-amber-100 p-3 flex flex-wrap items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-amber-400 flex items-center justify-center text-white font-bold flex-shrink-0">
                   {m.name.charAt(0)}
                 </div>
@@ -67,7 +67,8 @@ export default async function AdminUsersPage() {
 
       {/* รายชื่อทั้งหมด */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[500px]">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อ</th>
@@ -121,6 +122,7 @@ export default async function AdminUsersPage() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

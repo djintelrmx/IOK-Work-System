@@ -14,7 +14,7 @@ export default async function EvidencePage() {
   }
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
       <div>
         <h1 className="text-xl font-bold text-gray-800">หลักฐาน / ผลงาน</h1>
         <p className="text-sm text-gray-400">ทั้งหมด {docs.length} ไฟล์</p>
@@ -27,7 +27,7 @@ export default async function EvidencePage() {
           <p className="text-sm text-gray-400 mt-1">อัปโหลดได้จากหน้ารายละเอียดงาน</p>
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {docs.map(doc => (
             <a key={doc.id} href={doc.file_url} target="_blank" rel="noopener noreferrer"
               className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">

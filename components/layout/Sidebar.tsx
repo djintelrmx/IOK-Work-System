@@ -25,9 +25,10 @@ const navAdmin = [
 interface SidebarProps {
   userName?: string
   userEmail?: string
+  onClose?: () => void
 }
 
-export default function Sidebar({ userName, userEmail }: SidebarProps) {
+export default function Sidebar({ userName, userEmail, onClose }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -37,10 +38,15 @@ export default function Sidebar({ userName, userEmail }: SidebarProps) {
           <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
             <span className="text-indigo-800 font-bold text-sm">IOK</span>
           </div>
-          <div>
+          <div className="flex-1">
             <p className="font-bold text-sm leading-tight">IOK Work System</p>
             <p className="text-indigo-300 text-xs">มหาวิทยาลัยเกษมบัณฑิต</p>
           </div>
+          {onClose && (
+            <button onClick={onClose} className="text-indigo-300 hover:text-white p-1 -mr-1" aria-label="ปิดเมนู">
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
@@ -49,7 +55,7 @@ export default function Sidebar({ userName, userEmail }: SidebarProps) {
         {nav.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || (href !== '/' && pathname.startsWith(href))
           return (
-            <Link key={href} href={href}
+            <Link key={href} href={href} onClick={onClose}
               className={clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
                 active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10'
@@ -64,7 +70,7 @@ export default function Sidebar({ userName, userEmail }: SidebarProps) {
         {navAdmin.map(({ label, href, icon: Icon }) => {
           const active = pathname.startsWith(href)
           return (
-            <Link key={href} href={href}
+            <Link key={href} href={href} onClick={onClose}
               className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
                 active ? 'bg-white/15 border-l-2 border-white pl-[10px]' : 'hover:bg-white/10')}>
               <Icon size={16} className="flex-shrink-0" />

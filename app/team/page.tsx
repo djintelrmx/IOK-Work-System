@@ -7,19 +7,19 @@ export default async function TeamPage() {
   const members = (raw ?? []) as TeamMember[]
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-800">ทีมงาน</h1>
           <p className="text-sm text-gray-400">ทั้งหมด {members.length} คน</p>
         </div>
         <Link href="/team/new"
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
           + เพิ่มทีมงาน
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {members.map(m => (
           <div key={m.id} className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-4 mb-4">
@@ -43,7 +43,7 @@ export default async function TeamPage() {
         ))}
 
         {members.length === 0 && (
-          <div className="col-span-3 text-center py-16 text-gray-400">
+          <div className="col-span-full text-center py-16 text-gray-400">
             ยังไม่มีทีมงาน —{' '}
             <Link href="/team/new" className="text-indigo-500 underline">เพิ่มคนแรก</Link>
           </div>
