@@ -81,10 +81,10 @@ export default async function BillingInvoicePage({ params }: { params: Promise<{
       </head>
       <body>
         <div className="no-print" style={{ background: '#f8fafc', padding: '12px 20px', display: 'flex', gap: '10px' }}>
-          <button onClick={() => window.print()} style={{ background: '#3730a3', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
+          <button id="btn-print" style={{ background: '#3730a3', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
             🖨️ พิมพ์ / บันทึก PDF
           </button>
-          <button onClick={() => window.close()} style={{ background: 'white', border: '1px solid #e2e8f0', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
+          <button id="btn-close" style={{ background: 'white', border: '1px solid #e2e8f0', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
             ✕ ปิด
           </button>
         </div>
@@ -190,6 +190,10 @@ export default async function BillingInvoicePage({ params }: { params: Promise<{
             <span>เลขอ้างอิง: {billRef}</span>
           </div>
         </div>
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.getElementById('btn-print').onclick = function(){ window.print(); };
+          document.getElementById('btn-close').onclick = function(){ window.close(); };
+        `}} />
       </body>
     </html>
   )

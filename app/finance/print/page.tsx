@@ -70,10 +70,10 @@ export default async function FinancePrintPage() {
       </head>
       <body>
         <div className="no-print" style={{ background: '#f8fafc', padding: '10px 16px', display: 'flex', gap: '10px' }}>
-          <button onClick={() => window.print()} style={{ background: '#3730a3', color: 'white', border: 'none', padding: '7px 18px', borderRadius: '7px', cursor: 'pointer', fontSize: '13px' }}>
+          <button id="btn-print" style={{ background: '#3730a3', color: 'white', border: 'none', padding: '7px 18px', borderRadius: '7px', cursor: 'pointer', fontSize: '13px' }}>
             🖨️ พิมพ์ / บันทึก PDF
           </button>
-          <button onClick={() => window.close()} style={{ background: 'white', border: '1px solid #e2e8f0', padding: '7px 18px', borderRadius: '7px', cursor: 'pointer', fontSize: '13px' }}>
+          <button id="btn-close" style={{ background: 'white', border: '1px solid #e2e8f0', padding: '7px 18px', borderRadius: '7px', cursor: 'pointer', fontSize: '13px' }}>
             ✕ ปิด
           </button>
         </div>
@@ -172,6 +172,10 @@ export default async function FinancePrintPage() {
             <span>พิมพ์วันที่ {new Date().toLocaleDateString('th-TH')}</span>
           </div>
         </div>
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.getElementById('btn-print').onclick = function(){ window.print(); };
+          document.getElementById('btn-close').onclick = function(){ window.close(); };
+        `}} />
       </body>
     </html>
   )
