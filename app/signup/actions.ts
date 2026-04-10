@@ -13,7 +13,10 @@ export async function signupWithEmail(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: name } },
+    options: {
+      data: { full_name: name },
+      emailRedirectTo: 'https://iokwork.metaallsolution.com/auth/callback',
+    },
   })
 
   if (error) redirect('/signup?error=signup_failed')
