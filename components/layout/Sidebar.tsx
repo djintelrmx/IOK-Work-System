@@ -72,7 +72,7 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
           )
         })}
 
-        {/* ออกบิล — admin + staff */}
+        {/* การเงิน — admin + staff เห็น billing/quotations, admin เห็นทั้งหมด */}
         {(accessLevel === 'admin' || accessLevel === 'staff') && (
           <>
             <p className="text-indigo-400 text-xs font-semibold px-3 pt-5 pb-2 uppercase tracking-wider">การเงิน</p>
@@ -87,13 +87,7 @@ export default function Sidebar({ userName, userEmail, onClose, accessLevel = 's
                 </Link>
               )
             })}
-          </>
-        )}
-
-        {/* การเงิน — เฉพาะ admin */}
-        {accessLevel === 'admin' && (
-          <>
-            {navFinance.map(({ label, href, icon: Icon }) => {
+            {accessLevel === 'admin' && navFinance.map(({ label, href, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
                 <Link key={href} href={href} onClick={onClose}
