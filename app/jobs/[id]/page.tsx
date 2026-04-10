@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { updateJobStatus } from './actions'
 import { getAccessLevel } from '@/lib/access'
-import PrintButton from '@/components/PrintButton'
 
 const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
 const STATUS_COLOR: Record<string, string> = {
@@ -35,6 +34,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
   const fmt = (n: number) => n.toLocaleString('th-TH')
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' })
+  const fmtTime = (t: string) => { const [h, m] = t.split(':'); return `${parseInt(h)}.${m}` }
   const profit = (job.income ?? 0) - (job.expense ?? 0)
 
   return (
@@ -90,7 +90,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           <Row label="วันที่" value={fmtDate(job.job_date)} />
           {job.job_time_start && (
-            <Row label="เวลา" value={`${job.job_time_start}${job.job_time_end ? ` – ${job.job_time_end}` : ''} น.`} />
+            <Row label="เวลา" value={`${fmtTime(job.job_time_start)}${job.job_time_end ? ` - ${fmtTime(job.job_time_end)}` : ''} น.`} />
           )}
           <Row label="หน่วยงาน / ผู้ว่าจ้าง" value={job.client_org} />
           <Row label="แหล่งที่มา" value={job.source} />
@@ -174,7 +174,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             ✏️ แก้ไขงาน
           </Link>
         )}
-        <PrintButton />
+        <Link href={`/jobs/${id}/print`} target="_blank"
+          className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[100px]">
+          🖨️ พิมพ์ใบงาน
+        </Link>
         <Link href="/jobs"
           className="flex-1 text-center border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm py-2.5 rounded-xl transition-colors font-medium min-w-[100px]">
           กลับรายการ

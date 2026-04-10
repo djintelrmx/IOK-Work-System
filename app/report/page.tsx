@@ -2,6 +2,8 @@ import { supabase } from '@/lib/supabase'
 import type { Job } from '@/types/database'
 import { getAccessLevel } from '@/lib/access'
 import { redirect } from 'next/navigation'
+import PrintButton from '@/components/PrintButton'
+import Link from 'next/link'
 
 export default async function ReportPage() {
   const level = await getAccessLevel()
@@ -36,10 +38,16 @@ export default async function ReportPage() {
           <h1 className="text-lg md:text-xl font-bold text-gray-800">รายงานผลการปฏิบัติงาน IOK</h1>
           <p className="text-sm text-gray-400">ปีการศึกษา {year} | มหาวิทยาลัยเกษมบัณฑิต</p>
         </div>
-        <button className="flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap flex-shrink-0"
-          onClick={() => window.print()}>
-          🖨️ <span className="hidden sm:inline">พิมพ์ / </span>PDF
-        </button>
+        <div className="flex gap-2">
+          <Link href="/finance/print" target="_blank"
+            className="border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            🖨️ พิมพ์รายงาน
+          </Link>
+          <a href="/api/export/finance"
+            className="border border-green-200 text-green-700 hover:bg-green-50 text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            📊 Excel
+          </a>
+        </div>
       </div>
 
       {/* สรุปตัวเลข */}
