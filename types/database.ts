@@ -19,6 +19,7 @@ export interface TeamMember {
 
 export interface Job {
   id: string
+  job_number: string | null
   title: string
   job_type: JobType
   source: JobSource
@@ -62,6 +63,51 @@ export interface JobDocument {
 export interface JobWithDetails extends Job {
   job_assignments: (JobAssignment & { team_members: TeamMember })[]
   job_documents: JobDocument[]
+}
+
+export type QuotationStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'cancelled'
+
+export interface QuotationItem {
+  id: string
+  quotation_id: string
+  sort_order: number
+  description: string
+  qty: number
+  unit: string | null
+  unit_price: number
+  amount: number
+  created_at: string
+}
+
+export interface Quotation {
+  id: string
+  quotation_number: string
+  job_id: string | null
+  client_org: string
+  client_contact: string | null
+  issue_date: string
+  valid_until: string | null
+  subject: string
+  note: string | null
+  discount: number
+  vat_percent: number
+  status: QuotationStatus
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface QuotationWithItems extends Quotation {
+  quotation_items: QuotationItem[]
+  jobs?: Pick<Job, 'id' | 'job_number' | 'title'> | null
+}
+
+export interface QuotationItemDraft {
+  sort_order: number
+  description: string
+  qty: number
+  unit: string
+  unit_price: number
 }
 
 export interface Database {

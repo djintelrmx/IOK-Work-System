@@ -29,17 +29,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="th">
       <body>
-        {user ? (
-          <AppShell
-            userName={memberName ?? user.user_metadata?.full_name ?? user.email}
-            userEmail={user.email}
-            accessLevel={accessLevel}
-          >
-            {children}
-          </AppShell>
-        ) : (
-          <main>{children}</main>
-        )}
+        {/* [TEST MODE] AppShell แสดงเสมอโดยไม่ต้อง login */}
+        <AppShell
+          userName={memberName ?? user?.user_metadata?.full_name ?? user?.email ?? 'ผู้ทดสอบ'}
+          userEmail={user?.email ?? ''}
+          accessLevel={accessLevel}
+        >
+          {children}
+        </AppShell>
       </body>
     </html>
   )

@@ -28,15 +28,14 @@ export async function updateSession(request: NextRequest) {
   const publicPaths = ['/login', '/signup', '/auth', '/forgot-password', '/reset-password']
   const isPublic = publicPaths.some(p => pathname === p || pathname.startsWith(p))
 
-  // ถ้าไม่ได้ login และไม่ได้อยู่หน้า public → redirect ไป login
-  if (!user && !isPublic) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // ถ้า login แล้วแต่เข้าหน้า login → redirect ไป dashboard
-  if (user && pathname === '/login') {
-    return NextResponse.redirect(new URL('/', request.url))
-  }
+  // [TEST MODE] ปิดการ redirect ชั่วคราว — เปิดให้เข้าได้ทุกหน้าโดยไม่ต้อง login
+  // หลังทดสอบเสร็จ ให้ uncomment 5 บรรทัดด้านล่างกลับ
+  // if (!user && !isPublic) {
+  //   return NextResponse.redirect(new URL('/login', request.url))
+  // }
+  // if (user && pathname === '/login') {
+  //   return NextResponse.redirect(new URL('/', request.url))
+  // }
 
   return supabaseResponse
 }
