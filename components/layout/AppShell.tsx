@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Menu } from 'lucide-react'
+import Image from 'next/image'
 import Sidebar from './Sidebar'
 
 interface AppShellProps {
@@ -39,15 +40,18 @@ export default function AppShell({ children, userName, userEmail }: AppShellProp
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile top bar */}
-        <header className="md:hidden flex items-center gap-3 px-4 py-3 bg-indigo-800 text-white sticky top-0 z-40 flex-shrink-0">
+        <header className="md:hidden flex items-center gap-3 px-4 py-2.5 bg-indigo-800 text-white sticky top-0 z-40 flex-shrink-0">
           <button onClick={() => setOpen(true)} className="p-1 -ml-1" aria-label="เปิดเมนู">
             <Menu size={22} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-indigo-800 font-bold text-xs">IOK</span>
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5">
+              <Image src="/logo.png" alt="IOK Logo" width={28} height={28} className="object-contain" />
             </div>
-            <span className="font-bold text-sm">IOK Work System</span>
+            <div>
+              <p className="font-bold text-sm leading-tight">IOK Work System</p>
+              <p className="text-indigo-300 text-xs leading-tight">Institute of KBU Creative Media</p>
+            </div>
           </div>
         </header>
 

@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, FileText, CalendarDays, Users,
@@ -33,14 +34,14 @@ export default function Sidebar({ userName, userEmail, onClose }: SidebarProps) 
 
   return (
     <aside className="w-60 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col flex-shrink-0 h-screen sticky top-0">
-      <div className="p-5 border-b border-indigo-700">
+      <div className="p-4 border-b border-indigo-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-indigo-800 font-bold text-sm">IOK</span>
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5">
+            <Image src="/logo.png" alt="IOK Logo" width={36} height={36} className="object-contain" />
           </div>
           <div className="flex-1">
             <p className="font-bold text-sm leading-tight">IOK Work System</p>
-            <p className="text-indigo-300 text-xs">มหาวิทยาลัยเกษมบัณฑิต</p>
+            <p className="text-indigo-300 text-xs">Institute of KBU Creative Media</p>
           </div>
           {onClose && (
             <button onClick={onClose} className="text-indigo-300 hover:text-white p-1 -mr-1" aria-label="ปิดเมนู">

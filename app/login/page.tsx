@@ -1,6 +1,7 @@
 import { loginWithGoogle } from './actions'
 import { loginWithEmail } from '../signup/actions'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const params = await searchParams
@@ -17,13 +18,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-800 to-indigo-900">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center">
-            <span className="text-white font-bold text-2xl">IOK</span>
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-28 h-28 flex items-center justify-center mb-3">
+            <Image src="/logo.png" alt="IOK Logo" width={112} height={112} className="object-contain" />
           </div>
+          <h1 className="text-xl font-bold text-gray-800 text-center leading-tight">IOK Work System</h1>
+          <p className="text-sm text-gray-400 text-center">Institute of KBU Creative Media</p>
         </div>
-        <h1 className="text-xl font-bold text-gray-800 text-center mb-1">IOK Work System</h1>
-        <p className="text-sm text-gray-400 text-center mb-6">มหาวิทยาลัยเกษมบัณฑิต</p>
 
         {error && ERROR_MSG[error] && (
           <div className="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
