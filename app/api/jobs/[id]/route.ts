@@ -6,7 +6,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json()
   const { assignments, ...jobData } = body
 
-  const { error } = await supabase.from('jobs').update(jobData).eq('id', id)
+  const { error } = await (supabase as any).from('jobs').update(jobData).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
   // อัปเดต assignments: ลบเก่า แล้วใส่ใหม่
