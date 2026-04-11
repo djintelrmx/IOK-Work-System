@@ -1,12 +1,22 @@
 import { supabase } from '@/lib/supabase'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
-  const { data: rawJobs } = await supabase
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const year = searchParams.get('year')
+
+  let query = supabase
     .from('jobs')
     .select('job_number, title, job_type, job_type_custom, source, client_org, job_date, income, expense, status, payment_status, supervisor_name, order_type')
     .order('job_date', { ascending: false })
 
+  if (year) {
+    query = (query as any)
+      .gte('job_date', `${year}-01-01`)
+      .lte('job_date', `${year}-12-31`)
+  }
+
+  const { data: rawJobs } = await query
   const jobs = (rawJobs ?? []) as any[]
 
   const STATUS_LABEL: Record<string, string> = { pending: 'รอดำเนินการ', in_progress: 'กำลังทำ', done: 'เสร็จแล้ว' }
@@ -35,11 +45,12 @@ export async function GET() {
     .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
     .join('\n')
 
-  const bom = '\uFEFF' // UTF-8 BOM for Excel Thai support
+  const bom = '\uFEFF'
+  const filename = year ? `jobs_${year}.csv` : `jobs_${new Date().toISOString().slice(0, 10)}.csv`
   return new NextResponse(bom + csv, {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="jobs_${new Date().toISOString().slice(0, 10)}.csv"`,
+      'Content-Disposition': `attachment; filename="${filename}"`,
     },
   })
 }
