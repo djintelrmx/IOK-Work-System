@@ -87,9 +87,9 @@ export default async function ReportPage({ searchParams }: { searchParams: Promi
             className="border border-green-200 text-green-700 hover:bg-green-50 text-sm px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
             📊 Export CSV
           </a>
-          <Link href="/finance/print" target="_blank"
+          <Link href={`/report/print?year=${year}`} target="_blank"
             className="border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
-            🖨️ พิมพ์
+            🖨️ พิมพ์รายงาน
           </Link>
         </div>
       </div>

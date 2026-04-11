@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import Sidebar from './Sidebar'
 import NotificationBell from '@/components/NotificationBell'
+import GlobalSearch from '@/components/GlobalSearch'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -58,9 +59,14 @@ export default function AppShell({ children, userName, userEmail, accessLevel = 
           </div>
           <NotificationBell userEmail={userEmail ?? ''} />
         </header>
+        {/* Mobile search bar */}
+        <div className="md:hidden px-3 py-2 bg-white border-b border-gray-100 flex-shrink-0">
+          <GlobalSearch />
+        </div>
 
-        {/* Desktop top bar — notification bell only */}
-        <div className="hidden md:flex items-center justify-end px-4 py-2 bg-indigo-900/10 border-b border-gray-100 flex-shrink-0">
+        {/* Desktop top bar */}
+        <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-indigo-900/10 border-b border-gray-100 flex-shrink-0">
+          <GlobalSearch />
           <NotificationBell userEmail={userEmail ?? ''} />
         </div>
 

@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 // Print routes ที่ไม่ต้องการ AppShell
 function isPrintRoute(pathname: string) {
   return pathname.endsWith('/print') ||
+    pathname === '/report/print' ||
     /\/billing\/[0-9a-f-]{36}$/.test(pathname)
 }
 

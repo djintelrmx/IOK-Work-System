@@ -26,14 +26,22 @@ const JOB_ICON: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
-  const [{ data: rawJobs }, { data: rawMembers }, { data: allJobsRaw }] = await Promise.all([
+  const next7 = new Date()
+  next7.setDate(next7.getDate() + 7)
+  const [{ data: rawJobs }, { data: rawMembers }, { data: allJobsRaw }, { data: upcomingRaw }] = await Promise.all([
     supabase.from('jobs').select('*, job_assignments(*, team_members(*))').order('job_date', { ascending: false }).limit(5),
     supabase.from('team_members').select('*').eq('is_active', true),
     supabase.from('jobs').select('job_date, income, expense').order('job_date'),
+    supabase.from('jobs').select('id, title, job_date, status, client_org, job_type')
+      .gte('job_date', new Date().toISOString().split('T')[0])
+      .lte('job_date', next7.toISOString().split('T')[0])
+      .neq('status', 'done')
+      .order('job_date'),
   ])
 
   const allJobs = (rawJobs ?? []) as Job[]
   const members = (rawMembers ?? []) as TeamMember[]
+  const upcomingJobs = (upcomingRaw ?? []) as Job[]
   const totalIncome = allJobs.reduce((s, j) => s + (j.income ?? 0), 0)
   const inProgress = allJobs.filter(j => j.status === 'in_progress').length
   const today = new Date().toISOString().split('T')[0]
@@ -98,6 +106,40 @@ export default async function DashboardPage() {
         </div>
         <IncomeChart data={chartData} />
       </div>
+
+      {/* งานที่กำลังจะถึงใน 7 วัน */}
+      {upcomingJobs.length > 0 && (
+        <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 md:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-semibold text-amber-800">🔔 งานที่กำลังจะมาใน 7 วันข้างหน้า</h2>
+            <span className="text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-medium">{upcomingJobs.length} งาน</span>
+          </div>
+          <div className="space-y-2">
+            {upcomingJobs.map(job => {
+              const jobDate = new Date(job.job_date)
+              const diffDays = Math.ceil((jobDate.getTime() - new Date().setHours(0,0,0,0)) / 86400000)
+              return (
+                <Link key={job.id} href={`/jobs/${job.id}`}
+                  className="flex items-center gap-3 bg-white rounded-lg p-3 hover:shadow-sm transition-shadow">
+                  <div className="w-12 h-12 bg-amber-100 rounded-lg flex flex-col items-center justify-center flex-shrink-0">
+                    <span className="text-lg font-bold text-amber-700 leading-none">{jobDate.getDate()}</span>
+                    <span className="text-xs text-amber-500">{['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][jobDate.getMonth()]}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-800 truncate">{job.title}</p>
+                    <p className="text-sm text-gray-500 truncate">{job.client_org}</p>
+                  </div>
+                  <div className="flex-shrink-0 text-right">
+                    <span className={`text-sm font-bold ${diffDays === 0 ? 'text-red-600' : diffDays <= 2 ? 'text-orange-600' : 'text-amber-600'}`}>
+                      {diffDays === 0 ? 'วันนี้!' : diffDays === 1 ? 'พรุ่งนี้' : `อีก ${diffDays} วัน`}
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* งานล่าสุด */}
