@@ -4,10 +4,20 @@ import AppShell from '@/components/layout/AppShell'
 import { createClient } from '@/lib/supabase-server'
 import { getAccessLevel } from '@/lib/access'
 import { headers } from 'next/headers'
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
 
 export const metadata: Metadata = {
   title: 'IOK Work System — KBU',
   description: 'ระบบจัดการงาน IOK มหาวิทยาลัยเกษมบัณฑิต',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'IOK Work',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 }
 
 // Print routes ที่ไม่ต้องการ AppShell
@@ -39,7 +49,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="th">
+      <head>
+        <meta name="theme-color" content="#4338ca" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body>
+        <ServiceWorkerRegister />
         {bare ? (
           // หน้า print — ไม่มี sidebar/header
           <main>{children}</main>

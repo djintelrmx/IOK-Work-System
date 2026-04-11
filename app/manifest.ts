@@ -10,10 +10,41 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#ffffff',
     theme_color: '#4338ca',
     orientation: 'portrait',
+    categories: ['productivity', 'business'],
     icons: [
-      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      {
+        src: '/icon?size=192',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/icon',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: '/icon',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'บันทึกรับงาน',
+        url: '/jobs/new',
+        description: 'เพิ่มงานใหม่',
+      },
+      {
+        name: 'ปฏิทินงาน',
+        url: '/calendar',
+        description: 'ดูปฏิทินงาน',
+      },
+      {
+        name: 'รายการงาน',
+        url: '/jobs',
+        description: 'ดูงานทั้งหมด',
+      },
     ],
   }
 }
