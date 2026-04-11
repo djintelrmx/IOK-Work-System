@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import type { Job } from '@/types/database'
 import { getAccessLevel } from '@/lib/access'
 import { redirect } from 'next/navigation'
+import PrintControls from '@/components/PrintControls'
 
 const LOGO = 'https://pjxtmumrlgtouejahrlz.supabase.co/storage/v1/object/public/logo/logo%20iok.jpg'
 const MONTH_NAMES = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
@@ -82,14 +83,7 @@ export default async function ReportPrintPage({ searchParams }: { searchParams: 
         }
       `}} />
 
-      <div className="no-print" style={{ padding: '16px', display: 'flex', gap: '8px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-        <button onClick={() => window.print()} style={{ padding: '8px 16px', background: '#4338ca', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
-          🖨️ พิมพ์รายงาน
-        </button>
-        <a href={`/report?year=${year}`} style={{ padding: '8px 16px', border: '1px solid #e2e8f0', borderRadius: '8px', textDecoration: 'none', color: '#374151', fontSize: '14px' }}>
-          ← กลับ
-        </a>
-      </div>
+      <PrintControls />
 
       <div className="page">
         <div className="header">
