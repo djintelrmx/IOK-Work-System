@@ -63,47 +63,51 @@ export default function BottomNav() {
       )}
 
       {/* Bottom bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex items-center h-16 px-2 safe-area-inset-bottom">
-        {/* Left: 2 items */}
-        {leftNav.map(({ href, icon: Icon, label }) => {
-          const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
-          return (
-            <Link key={href} href={href}
-              className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-colors',
-                active ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600')}>
-              <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
-              <span className="text-xs font-medium">{label}</span>
-            </Link>
-          )
-        })}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 h-16 safe-area-inset-bottom">
+        {/* FAB — absolute center */}
+        <Link href="/jobs/new"
+          className="absolute left-1/2 -translate-x-1/2 -top-5 w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-200 active:scale-95 transition-transform z-10">
+          <Plus size={26} strokeWidth={2.5} className="text-white" />
+        </Link>
 
-        {/* FAB — center */}
-        <div className="flex-1 flex justify-center">
-          <Link href="/jobs/new"
-            className="w-14 h-14 -mt-5 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-200 active:scale-95 transition-transform">
-            <Plus size={26} strokeWidth={2.5} className="text-white" />
-          </Link>
+        {/* Nav items — 4 ปุ่ม แบ่งซ้าย-ขวา ข้าม FAB */}
+        <div className="flex h-full">
+          {/* Left 2 */}
+          {leftNav.map(({ href, icon: Icon, label }) => {
+            const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
+            return (
+              <Link key={href} href={href}
+                className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors',
+                  active ? 'text-indigo-600' : 'text-gray-400')}>
+                <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
+                <span className="text-xs font-medium">{label}</span>
+              </Link>
+            )
+          })}
+
+          {/* Center spacer for FAB */}
+          <div className="w-16 flex-shrink-0" />
+
+          {/* Right 2 */}
+          {rightNav.map(({ href, icon: Icon, label }) => {
+            const active = pathname.startsWith(href)
+            return (
+              <Link key={href} href={href}
+                className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors',
+                  active ? 'text-indigo-600' : 'text-gray-400')}>
+                <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
+                <span className="text-xs font-medium">{label}</span>
+              </Link>
+            )
+          })}
+
+          <button onClick={() => setShowMore(v => !v)}
+            className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors',
+              showMore ? 'text-indigo-600' : 'text-gray-400')}>
+            <MoreHorizontal size={22} strokeWidth={showMore ? 2.5 : 1.8} />
+            <span className="text-xs font-medium">เพิ่มเติม</span>
+          </button>
         </div>
-
-        {/* Right: 2 items */}
-        {rightNav.map(({ href, icon: Icon, label }) => {
-          const active = pathname.startsWith(href)
-          return (
-            <Link key={href} href={href}
-              className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-colors',
-                active ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600')}>
-              <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
-              <span className="text-xs font-medium">{label}</span>
-            </Link>
-          )
-        })}
-
-        <button onClick={() => setShowMore(v => !v)}
-          className={clsx('flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-colors',
-            showMore ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600')}>
-          <MoreHorizontal size={22} strokeWidth={showMore ? 2.5 : 1.8} />
-          <span className="text-xs font-medium">เพิ่มเติม</span>
-        </button>
       </nav>
     </>
   )
