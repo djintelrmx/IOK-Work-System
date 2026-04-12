@@ -57,7 +57,7 @@ export default async function JobsPage({ searchParams }: Props) {
             ⬇️ Export
           </Link>
           <Link href="/jobs/new"
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            className="hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
             + บันทึกรับงาน
           </Link>
         </div>
@@ -66,81 +66,124 @@ export default async function JobsPage({ searchParams }: Props) {
       {/* Filter bar */}
       <JobsFilter initialQ={q} initialStatus={statusFilter} initialSource={sourceFilter} initialFrom={from} initialTo={to} />
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          {all.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-16">ไม่พบข้อมูลงานที่ตรงกัน</p>
-          ) : (
-            <table className="w-full text-base min-w-[700px]">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">งาน</th>
-                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">หน่วยงาน</th>
-                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">วันที่</th>
-                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">ทีม</th>
-                  <th className="text-right px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">รายได้</th>
-                  <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">สถานะ</th>
-                  <th className="px-4 py-3"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {all.map(job => (
-                  <tr key={job.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      {(job as any).job_number && (
-                        <p className="text-xs font-mono font-semibold text-indigo-500 mb-0.5">{(job as any).job_number}</p>
-                      )}
-                      <p className="font-medium text-gray-800">{job.title}</p>
-                      <p className="text-sm text-gray-400">{job.job_type}{(job as any).job_type_custom ? ` — ${(job as any).job_type_custom}` : ''}</p>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium mr-1 ${job.source === 'ภายในมหาวิทยาลัย' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
-                        {job.source === 'ภายในมหาวิทยาลัย' ? 'ใน' : 'นอก'}
-                      </span>
-                      {job.client_org}
-                    </td>
-                    <td className="px-4 py-3 text-gray-500 text-sm">
-                      {new Date(job.job_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex -space-x-1">
-                        {(job.job_assignments ?? []).slice(0, 3).map((a: { member_id: string; team_members: { name: string } | null }) => (
-                          <div key={a.member_id}
-                            className="w-6 h-6 rounded-full bg-indigo-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
-                            title={a.team_members?.name ?? ''}>
-                            {a.team_members?.name?.charAt(0) ?? '?'}
-                          </div>
-                        ))}
-                        {(job.job_assignments ?? []).length > 3 && (
-                          <div className="w-6 h-6 rounded-full bg-gray-300 border-2 border-white flex items-center justify-center text-gray-600 text-xs font-bold">
-                            +{(job.job_assignments ?? []).length - 3}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold text-gray-800">{fmt(job.income ?? 0)} ฿</td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1">
-                        <span className={`text-sm px-2 py-0.5 rounded-full font-medium w-fit ${STATUS_COLOR[job.status]}`}>
-                          {STATUS_LABEL[job.status]}
-                        </span>
-                        {job.payment_status && job.payment_status !== 'unpaid' && (
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit ${PAYMENT_COLOR[job.payment_status]}`}>
-                            {PAYMENT_LABEL[job.payment_status]}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link href={`/jobs/${job.id}`} className="text-indigo-500 hover:underline text-sm">ดู</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+      {all.length === 0 ? (
+        <div className="bg-white rounded-xl border border-gray-100 py-16 text-center">
+          <p className="text-sm text-gray-400">ไม่พบข้อมูลงานที่ตรงกัน</p>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Mobile: card view */}
+          <div className="md:hidden space-y-2">
+            {all.map(job => (
+              <Link key={job.id} href={`/jobs/${job.id}`}
+                className="block bg-white rounded-xl border border-gray-100 p-4 active:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    {(job as any).job_number && (
+                      <p className="text-xs font-mono text-indigo-400 mb-0.5">{(job as any).job_number}</p>
+                    )}
+                    <p className="font-semibold text-gray-800 leading-snug">{job.title}</p>
+                    <p className="text-sm text-gray-500 mt-0.5">{job.client_org}</p>
+                  </div>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${STATUS_COLOR[job.status]}`}>
+                    {STATUS_LABEL[job.status]}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${job.source === 'ภายในมหาวิทยาลัย' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                    {job.source === 'ภายในมหาวิทยาลัย' ? 'งานใน' : 'งานนอก'}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(job.job_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </span>
+                  <div className="flex-1" />
+                  {(job.income ?? 0) > 0 && (
+                    <span className="text-sm font-semibold text-green-600">{fmt(job.income ?? 0)} ฿</span>
+                  )}
+                  {job.payment_status && job.payment_status !== 'unpaid' && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PAYMENT_COLOR[job.payment_status]}`}>
+                      {PAYMENT_LABEL[job.payment_status]}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop: table view */}
+          <div className="hidden md:block bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-base min-w-[700px]">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">งาน</th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">หน่วยงาน</th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">วันที่</th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">ทีม</th>
+                    <th className="text-right px-4 py-3 text-sm font-semibold text-gray-500">รายได้</th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-gray-500">สถานะ</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {all.map(job => (
+                    <tr key={job.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        {(job as any).job_number && (
+                          <p className="text-xs font-mono font-semibold text-indigo-500 mb-0.5">{(job as any).job_number}</p>
+                        )}
+                        <p className="font-medium text-gray-800">{job.title}</p>
+                        <p className="text-sm text-gray-400">{job.job_type}{(job as any).job_type_custom ? ` — ${(job as any).job_type_custom}` : ''}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium mr-1 ${job.source === 'ภายในมหาวิทยาลัย' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                          {job.source === 'ภายในมหาวิทยาลัย' ? 'ใน' : 'นอก'}
+                        </span>
+                        {job.client_org}
+                      </td>
+                      <td className="px-4 py-3 text-gray-500 text-sm">
+                        {new Date(job.job_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex -space-x-1">
+                          {(job.job_assignments ?? []).slice(0, 3).map((a: { member_id: string; team_members: { name: string } | null }) => (
+                            <div key={a.member_id}
+                              className="w-6 h-6 rounded-full bg-indigo-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                              title={a.team_members?.name ?? ''}>
+                              {a.team_members?.name?.charAt(0) ?? '?'}
+                            </div>
+                          ))}
+                          {(job.job_assignments ?? []).length > 3 && (
+                            <div className="w-6 h-6 rounded-full bg-gray-300 border-2 border-white flex items-center justify-center text-gray-600 text-xs font-bold">
+                              +{(job.job_assignments ?? []).length - 3}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-gray-800">{fmt(job.income ?? 0)} ฿</td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-col gap-1">
+                          <span className={`text-sm px-2 py-0.5 rounded-full font-medium w-fit ${STATUS_COLOR[job.status]}`}>
+                            {STATUS_LABEL[job.status]}
+                          </span>
+                          {job.payment_status && job.payment_status !== 'unpaid' && (
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit ${PAYMENT_COLOR[job.payment_status]}`}>
+                              {PAYMENT_LABEL[job.payment_status]}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link href={`/jobs/${job.id}`} className="text-indigo-500 hover:underline text-sm">ดู</Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
