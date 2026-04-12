@@ -5,9 +5,12 @@ import { LayoutDashboard, FileText, CalendarDays, Users, MoreHorizontal, Plus } 
 import { useState } from 'react'
 import { clsx } from 'clsx'
 
-const mainNav = [
+const leftNav = [
   { href: '/', icon: LayoutDashboard, label: 'หน้าหลัก' },
   { href: '/jobs', icon: FileText, label: 'งาน' },
+]
+
+const rightNav = [
   { href: '/calendar', icon: CalendarDays, label: 'ปฏิทิน' },
   { href: '/team', icon: Users, label: 'ทีม' },
 ]
@@ -60,8 +63,9 @@ export default function BottomNav() {
       )}
 
       {/* Bottom bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex items-center h-16 px-1 safe-area-inset-bottom">
-        {mainNav.slice(0, 2).map(({ href, icon: Icon, label }) => {
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex items-center h-16 px-2 safe-area-inset-bottom">
+        {/* Left: 2 items */}
+        {leftNav.map(({ href, icon: Icon, label }) => {
           const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
           return (
             <Link key={href} href={href}
@@ -73,13 +77,16 @@ export default function BottomNav() {
           )
         })}
 
-        {/* FAB — เพิ่มงาน */}
-        <Link href="/jobs/new"
-          className="flex-shrink-0 w-14 h-14 -mt-5 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-200 mx-1 active:scale-95 transition-transform">
-          <Plus size={26} strokeWidth={2.5} className="text-white" />
-        </Link>
+        {/* FAB — center */}
+        <div className="flex-1 flex justify-center">
+          <Link href="/jobs/new"
+            className="w-14 h-14 -mt-5 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-200 active:scale-95 transition-transform">
+            <Plus size={26} strokeWidth={2.5} className="text-white" />
+          </Link>
+        </div>
 
-        {mainNav.slice(2).map(({ href, icon: Icon, label }) => {
+        {/* Right: 2 items */}
+        {rightNav.map(({ href, icon: Icon, label }) => {
           const active = pathname.startsWith(href)
           return (
             <Link key={href} href={href}
