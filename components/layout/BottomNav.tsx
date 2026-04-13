@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, CalendarDays, Users, MoreHorizontal, Plus } from 'lucide-react'
+import { LayoutDashboard, FileText, CalendarDays, MoreHorizontal, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { clsx } from 'clsx'
 
@@ -12,10 +12,10 @@ const leftNav = [
 
 const rightNav = [
   { href: '/calendar', icon: CalendarDays, label: 'ปฏิทิน' },
-  { href: '/team', icon: Users, label: 'ทีม' },
 ]
 
 const moreNav = [
+  { href: '/team', label: '👥 ทีม' },
   { href: '/evidence', label: '📸 หลักฐาน/ผลงาน' },
   { href: '/clients', label: '🏢 หน่วยงาน' },
   { href: '/compensation', label: '💰 ค่าตอบแทน' },
